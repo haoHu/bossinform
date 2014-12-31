@@ -1,0 +1,357 @@
+
+.bi-bar {
+	background-color : @bi-bar-bg;
+	.btn-link, .icon-left-nav, .title {
+		color : @bi-color;
+	}
+	.dropdown-menu {
+		width : 100%; max-height : 380px; margin : 0; padding : 0; border : 1px none; .x-border-radius(0);
+	}
+}
+
+.bi-login-tab {
+	z-index : 10; margin-top : -1px;
+}
+.bi-login {
+	height : 100%; margin-top: -44px; padding-top : 44px;
+	.card {border : 0 none; .x-border-radius(0); }
+	.btn-positive {
+		.x-border-radius(50%);
+		.x-area-size(80px, 80px);
+		background: #E0DDDB;
+		font-size : 48px;
+		margin : 1em auto;
+		&.active, &:active {
+			color : #fff;
+			border : 1px solid #E0DDDB;
+		}
+		&:hover, &:focus, &.hover, &.focus {
+			color : #fff;
+		}
+	}
+	.bi-dynamicpwd {width : 100px;}
+	.info {
+		position : absolute; bottom : 40px;
+		color : #eee;
+		h5, p, .bi-contact {font-size : 16px;}
+		h5 {color : @brand-warning; line-height: 1.5em;}
+		p {color : #909CAB;}
+		.bi-contact {
+			display : block; font-size : 24px; color :  #909CAB; line-height: 1.5em;
+			font-weight: lighter;
+		}
+	}
+}
+
+.form-control {
+	position : relative; margin-top : 1em; height : 40px;
+}
+
+.bi-authcode, .bi-dynamicpwd {
+	position : absolute;
+	top : 0px;
+	right : 5px;
+}
+.bi-authcode .auth-img {
+	.x-border-radius(3px);
+}
+
+/*
+	品牌列表样式
+ */
+.brand-list {
+	.brand-item {
+		
+		.price, .unit { display: block; text-align: left; font-size : 1em;}
+		.price {padding-top: 12px; color : @gray;}
+		.unit {color : @gray-light; font-size : 0.6em;}
+	}
+}
+.brand-logo {width : 60px; height : 60px; .x-border-radius(3px);}
+
+
+/*
+	过滤条件工具栏
+ */
+.bi-filter {
+	position : relative;
+	display : table;
+	table-layout: fixed;
+	width : 100%;
+	overflow : hidden;
+	font-size : 12px;
+	font-weight: 400;
+	background-color: #fff;
+	border : 0 none;
+	.filter-item {
+		display: table-cell;
+		width : 50%;
+		overflow : hidden;
+		text-align: left;
+		text-overflow : ellipsis;
+		white-space :nowrap;
+		line-height: 3;
+		color : #333;
+		font-weight: 700;
+		border : 0 none;
+		vertical-align: middle;
+	}
+	.filter-item:first-child {
+		border-right : 1px solid #eee;
+		width : 25%;
+	}
+	.filter-item:last-child {
+		border-left : 1px solid #eee;
+		width : 25%;
+	}
+	.item-label {
+		display : block; position: relative; line-height: 3; color : @gray;
+		.label {
+			font-size : 16px; display: block; text-align: center; padding-right: 2em;
+			width : 100%; white-space: nowrap; text-overflow : ellipsis; overflow: hidden;
+		}
+		.brand-logo {margin-left : 3px; width : 40px; height : 40px;vertical-align: middle;}
+		> .icon {
+			position : absolute; right : 0; top : 0; margin-right : 1em; line-height: 4;font-weight: normal; font-size : 12px;
+			color : @gray-light;
+		}
+	}
+}
+
+/*
+	数据统计报表
+ */
+.bi-table {
+	.table-row {
+		position : relative;
+		display : table;
+		table-layout: fixed;
+		width : 100%;
+		overflow : hidden;
+		font-weight: 400;
+		background-color: #fff;
+		border : 0 none;
+	}
+	
+	.table-cell {
+		display: table-cell;
+		width : 1%;
+		overflow : hidden;
+		text-align: center;
+		line-height: 3;
+		font-size : 12px;
+	}
+	.table-header {
+
+	}
+	.table-body {
+		.table-row {
+			border-bottom : 1px solid @gray-lighter;
+			.table-cell:first-child {
+				border-right : 1px solid @gray-lighter;
+			}
+		}
+	}
+
+}
+
+.bi-table {
+	.table-header > .table-cell.curdate {
+		background-color : @brand-warning;
+		color : #fff;
+	}
+	.table-header > .table-cell.hisdate {
+		background-color : @brand-success;
+		color : #fff;
+		.icon {
+			display: block;
+			width : 3em; 
+			height : 3em;
+			font-size : 12px;
+			line-height: 3;
+			vertical-align: middle;
+			color : #fff;
+		}
+		.icon-left {border-right : 1px solid lighten(@brand-success, 30%);}
+		.icon-right {border-left : 1px solid lighten(@brand-success, 30%);}
+	}
+	.table-body {
+		.table-cell {
+			.label, .unit {color : @gray-light; font-size: 1em;}
+			.num, .percent {color : @gray-dark; font-size: 1.2em;}
+			h5 {
+				padding-left : 25%; margin-left : -2em; margin-top : 1em; margin-bottom : 1em; text-align: left;
+				font-size : 1.2em; color : @gray-light;
+			}
+			.table-cell {
+				&.label {
+					border-right : 1px none;
+					width : 25%;
+					text-align: right;
+				}
+				&.unit {
+					width : 35%;
+					text-align: left;
+					padding-left : .5em;
+				}
+				&.num {
+					width : 40%;
+					text-align: right;
+				}
+			}
+			
+		}
+		.curdate, .hisdate {
+			.table-row {
+				border-bottom : 0 none;
+			}
+		}
+		.hisdate {
+			.label {.invisible;}
+		}
+		.common  {
+			.uncheckout.hisdate {.invisible;}
+		}
+		.chart {
+			.chart-canvas {
+				height : 100px; width : 100%;
+			}
+			.chart-legend {
+				text-align: left; border-bottom: 0 none; line-height: 2em!important;
+				.table-cell {
+					line-height: 1em;
+					&.label {
+						width : 45%;text-align: left;
+						> span:last-child {vertical-align: middle;}
+					}
+					&.num {width : 40%; text-align: right; font-size: 1.2em;}
+					&.unit {width : 15%; text-align : left; padding-left : .25em;}
+				}
+				
+				
+				.legend-icon, .label, .num, .unit {
+					display: inline-block; vertical-align: middle; visibility: visible;
+				}
+				.legend-icon {
+					width : 1em; height : 1em; margin-left : 1em; .x-border-radius(3px);
+					margin-right : .5em;
+					&.mainIcon {background: @brand-warning;}
+					&.subIcon {background : #ccc;}
+				}
+			}
+			.curdate, .hisdate {padding-bottom : 1.5em;}
+			.hisdate .chart-legend .mainIcon {background: @brand-success;}
+		}
+		.list {
+			.hisdate .label {
+				visibility: visible;
+			}
+			.hisdate h5 {
+				.invisible;
+			}
+			ul {
+				margin : 0; padding : 0;
+				> li {
+					list-style: none; width : 100%; display: table;
+				}
+			}
+			.label, .percent, .num, .unit {
+				display: table-cell; overflow: hidden;  text-overflow : ellipsis; white-space :nowrap; text-align: right;
+				line-height: 2em;
+			}
+			.label {
+				width : 30%;
+			}
+			.percent {
+				width : 30%;
+			}
+			.num {
+				width : 30%;
+			}
+			.unit {
+				width : 10%; text-align: left;
+			}
+			.curdate, .hisdate {padding-bottom : 1.5em;}
+		}
+		
+	}
+}
+
+/*
+	页面工具栏
+ */
+.bi-toolbar {
+	position : fixed;
+	top : 0px;
+	left : 0px;
+	margin-top : 0px;
+	z-index: 5;
+	.bi-filter {
+		margin-top : 44px;
+	}
+	& + .bi-table {
+		margin-top : 48px;
+	}
+	.dropdown-menu {
+		width : 100%; max-height : 380px; margin : 0; padding : 0; border : 1px none; .x-border-radius(0);
+	}
+}
+
+/*
+	集团下拉菜单
+ */
+.droplist-group, .droplist-cycle {
+	max-height : 380px; overflow: auto;
+	.label {
+		display: block;
+	}
+	.brand-logo {
+		margin-left : 3px; margin-right : 1em; width : 40px; height : 40px;vertical-align: middle;
+	}
+	.list-item {
+		padding : 15px 3px; border-bottom : 1px solid @gray-lighter;
+		&.active {
+			color : @brand-success;
+		}
+		&:last-child {
+			border-bottom : 1px none;
+		}
+	}
+}
+
+.droplist-shop {
+	height : 380px; position: relative; background-color: @gray-lighter;
+	.city-item, .shop-item {
+		padding : 15px 3px;
+		&.active {
+			color : @brand-success;
+		}
+	}
+	.menu-city, .menu-shop {
+		display: block; height : 100%; overflow : auto; 
+	}
+	.menu-city {
+		width : 120px; background-color: #fff;
+		.num {display: inline-block; float : right; padding-right : 5px; }
+		.city-item.active {
+			background-color: @gray-lighter;
+		}
+	}
+	.menu-shop {
+		margin-left : 120px; border-left : 1px solid @gray-lighter; background-color: transparent;
+		> ul {display: none;}
+		> ul.active {display:block;}
+	}
+	
+}
+
+.brand-chart {
+	position : relative; padding-top : 100px; width : 100%; height : 100%; overflow : hidden; background-color: rgb(62,74,89);
+	// .chart-canvas {width : auto; height : 600px;}
+	.chart-list {
+		position : absolute; display: block; margin-top: 100px; width : 100%; height : 100%; left : 0; top : 0;
+		.chart-canvas {
+			position : absolute; top : 0;
+		}
+	}
+}

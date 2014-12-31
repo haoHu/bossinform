@@ -1,0 +1,98 @@
+.site-toptip {
+	position : fixed;  z-index : 99; top : 80%; 
+	width : 100%; text-align: center; 
+	p {text-align: center;}
+	@keyframes popup {
+		0% {
+			top : 100%;
+			.x-filter(.2);
+		}
+		100% {
+			top : 80%;
+			.x-filter(1);
+		}
+		
+	}
+	@-moz-keyframes popup {
+		0% {
+			top : 100%;
+			.x-filter(.2);
+		}
+		100% {
+			top : 80%;
+			.x-filter(1);
+		}
+		
+	}
+	@-webkit-keyframes popup {
+		0% {
+			top : 100%;
+			.x-filter(.2);
+		}
+		100% {
+			top : 80%;
+			.x-filter(1);
+		}
+		
+	}
+	@-o-keyframes popup {
+		0% {
+			top : 100%;
+			.x-filter(.2);
+		}
+		100% {
+			top : 80%;
+			.x-filter(1);
+		}
+		
+	}
+	@keyframes bubbleover {
+		0% {
+			top : 80%;
+		}
+		100% {
+			top : 100%;
+			.x-filter(.2);
+		}
+	}
+	@-moz-keyframes bubbleover {
+		0% {
+			top : 80%;
+		}
+		100% {
+			top : 100%;
+			.x-filter(.2);
+		}
+	}
+	@-webkit-keyframes bubbleover {
+		0% {
+			top : 80%;
+		}
+		100% {
+			top : 100%;
+			.x-filter(.2);
+		}
+	}
+	@-o-keyframes bubbleover {
+		0% {
+			top : 80%;
+		}
+		100% {
+			top : 100%;
+			.x-filter(.2);
+		}
+	}
+	&.popup {
+		animation : popup .5s 1 ease;
+		-moz-animation : popup .5s 1 ease;
+		-webkit-animation : popup .5s 1 ease;
+		-o-animation : popup .5s 1 ease;
+	}
+	&.bubbleover {
+		animation : bubbleover .5s 1 ease-out;
+		-moz-animation : bubbleover .5s 1 ease-out;
+		-webkit-animation : bubbleover .5s 1 ease-out;
+		-o-animation : bubbleover .5s 1 ease-out;
+	}
+}
+

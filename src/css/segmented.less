@@ -1,0 +1,27 @@
+.segmented-control {
+	@segmented-bg : rgb(249,250,252);
+	@segmented-active-bg : #fff;
+	@segmented-active-color : @brand-success;
+	@segmented-active-border : @brand-success;
+	@segmented-active-border-width : 8px;
+	table-layout : fixed; width: 100%;
+	border-bottom : 1px solid transparent;
+	border-top : 0px none;
+	border-left : 0px none;
+	.x-border-radius(0);
+	> .control-item {
+		background-color : @segmented-bg;
+		border-top : @segmented-active-border-width solid @segmented-bg;
+		border-left : 1px solid transparent;
+		// .x-font-size(@font-size-large);
+		font-size : @font-size-large;
+		line-height: 1.5;
+		color : @bi-base-color;
+		&.active {
+			color : @segmented-active-color;
+			font-weight : bold;
+			background-color : @segmented-active-bg;
+			border-top-color : @segmented-active-border;
+		}
+	}
+}
