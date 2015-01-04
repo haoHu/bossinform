@@ -126,7 +126,7 @@
 				}, 1000);
 				return ;
 			}
-			$img.attr('src', code);
+			$img.attr('src', Hualala.Global.AJAX_DOMAIN + code);
 
 		};
 		var init = function () {

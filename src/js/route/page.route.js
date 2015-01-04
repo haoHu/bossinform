@@ -91,6 +91,7 @@
 			match = path.match(reg);
 		var genPath = function (p) {
 			return Hualala.Global.HOME + p;
+			// return Hualala.Global.HOME + p.slice(1);
 		};
 		if (!match || match.length < 1) {
 			return console.err("The Path of Route (" + name + ") is wrong!!");

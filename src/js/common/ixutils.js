@@ -1544,7 +1544,7 @@ function AjaxCaller(routes, _ajaxFn, urlFac, chkRes){
 			data : _data,
 			dataType : "jsonp",
 			jsonp : "callback",
-			jsonpCallback : "jsonHandler",
+			jsonpCallback : "jsonpcallback",
 			success : function(data) {
 				unlockChannel(channel);
 				// if (IX.isFn(chkRes) && !chkRes(data)) return ;

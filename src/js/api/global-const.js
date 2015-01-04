@@ -2,6 +2,7 @@
 	IX.ns("Hualala.Global");
 
 	Hualala.Global.HOME = "";
+	// Hualala.Global.HOME = "file:///android_asset/index.html";
 	Hualala.Global.CommonSite = "";
 	Hualala.Global.HualalaWebSite = "http://www.hualala.com";
 	Hualala.Global.IMAGE_ROOT = "./img";
@@ -12,6 +13,6 @@
 	Hualala.Global.SWF_ROOT = "./swf";
 	Hualala.Global.workMode = "pesudo";
 	Hualala.Global.ECHART_PATH = "./js/echarts/echarts-plain.min.js";
-	Hualala.Global.AJAX_DOMAIN = "http://mu.dianpu.hualala.com";
+	Hualala.Global.AJAX_DOMAIN = "http://10.10.2.187:8080";
 	
 })();

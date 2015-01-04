@@ -24,7 +24,7 @@
 			log("Load BI APP Data in (ms): " + (IX.getTimeInMS() - tick));
 			if ($XP(appData, 'resultcode') != 0) {
 				HPR.jumpPage(HPR.createPath('login'));
-				throw("Session Data Load Faild!! resultcode = " + $XP(appData, "resultcode", "") + "; resultMsg = " + $XP(appData, 'resultmsg', ''));
+				log("Session Data Load Faild!! resultcode = " + $XP(appData, "resultcode", "") + "; resultMsg = " + $XP(appData, 'resultmsg', ''));
 			}
 			loadSession($XP(appData, 'data', {}), function () {
 				log("Merchant Sys INIT DONE in (ms): " + (IX.getTimeInMS() - tick));
