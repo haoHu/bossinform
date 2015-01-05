@@ -13,6 +13,6 @@
 	Hualala.Global.SWF_ROOT = "./swf";
 	Hualala.Global.workMode = "pesudo";
 	Hualala.Global.ECHART_PATH = "./js/echarts/echarts-plain.min.js";
-	Hualala.Global.AJAX_DOMAIN = "http://10.10.2.187:8080";
+	Hualala.Global.AJAX_DOMAIN = "http://zzc.shopbi.hualala.com:8080";
 	
 })();

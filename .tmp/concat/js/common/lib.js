@@ -4678,7 +4678,7 @@ var Pymatch=(function(){
 	Hualala.Global.SWF_ROOT = "./swf";
 	Hualala.Global.workMode = "pesudo";
 	Hualala.Global.ECHART_PATH = "./js/echarts/echarts-plain.min.js";
-	Hualala.Global.AJAX_DOMAIN = "http://10.10.2.187:8080";
+	Hualala.Global.AJAX_DOMAIN = "http://zzc.shopbi.hualala.com:8080";
 	
 })();
 (function () {
@@ -4725,13 +4725,13 @@ var Pymatch=(function(){
 		// Dynamic Login
 		["dynamicLoginCallServer", "/dynamicLogin.ajax", "", "POST"],
 		// 获取短信动态密码
-		["getMobileDynamicPWD", "/getDynamicCode.action", "", "POST"],
+		["getMobileDynamicPWD", "/getDynamicCode.ajax", "", "POST"],
 		// 获取动态验证码
 		["genAuthCode", "/getCheckCode.ajax", "", "GET"],
 		// Session Data
 		["loadAppData", "/getUserInfo.ajax", "", "GET"],
 		// 获取城市店铺数据
-		["getShopQuerySchema", "/shop/schema.ajax", "", "GET"],
+		["getShopQuerySchema", "/shop/queryShopInfo.ajax", "", "GET"],
 		// 获取集团统计数据
 		["getGroupStatistic", "/getGroupLst.ajax", "", "GET"]
 	];

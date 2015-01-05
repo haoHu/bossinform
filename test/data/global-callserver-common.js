@@ -13,7 +13,9 @@
 						case "loadAppData":
 							fn({
 								resultcode : '000', resultmsg : '',
-								data : Test.GroupList
+								data : {
+									records : Test.GroupList
+								}
 							});
 							break;
 						case "genAuthCode":

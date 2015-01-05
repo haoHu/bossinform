@@ -420,6 +420,37 @@
 	].join('');
 	TemplateList.register('tpl_indicator_droplist', tpl_indicator_droplist);
 
+	var tpl_profile_form = [
+		'<div class="card">',
+			'<form class="input-group {{clz}}">',
+			'{{#each items}}',
+				'{{#chkFormElementType type type="text"}}',
+				'<div class="form-control input-row">',
+					'<label>{{{label}}}</label>',
+					'<input type="{{type}}" name="{{name}}" readonly="{{readonly}}" data-key="{{key}}" id="{{id}}" value="{{value}}" />',
+				'</div>',
+				'{{/chkFormElementType}}',
+				'{{#chkFormElementType type type="password"}}',
+				'<div class="form-control input-row">',
+					'<label>{{{label}}}</label>',
+					'<input type="{{type}}" name="{{name}}" readonly="{{readonly}}" data-key="{{key}}" id="{{id}}" value="{{value}}" />',
+				'</div>',
+				'{{/chkFormElementType}}',
+				'{{#chkFormElementType type type="static"}}',
+				'<div class="form-control input-row">',
+					'<label>{{{label}}}</label>',
+					'<span type="{{type}}" name="{{name}}" readonly="{{readonly}}" data-key="{{key}}" id="{{id}}" data-value="{{value}}" >{{{dispVal}}}</span>',
+				'</div>',
+				'{{/chkFormElementType}}',
+			'{{/each}}',
+			'</form>',
+			'{{#with btn}}',
+				'<button class="btn btn-block {{clz}}" {{disabled}} data-act="{{act}}">{{{label}}}</button>',
+			'{{/with}}',
+		'</div>'
+	].join('');
+	TemplateList.register('tpl_profile_form', tpl_profile_form);
+
 
 	var TplLib = function () {
 		return {

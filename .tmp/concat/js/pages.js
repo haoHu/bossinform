@@ -420,6 +420,37 @@
 	].join('');
 	TemplateList.register('tpl_indicator_droplist', tpl_indicator_droplist);
 
+	var tpl_profile_form = [
+		'<div class="card">',
+			'<form class="input-group {{clz}}">',
+			'{{#each items}}',
+				'{{#chkFormElementType type type="text"}}',
+				'<div class="form-control input-row">',
+					'<label>{{{label}}}</label>',
+					'<input type="{{type}}" name="{{name}}" readonly="{{readonly}}" data-key="{{key}}" id="{{id}}" value="{{value}}" />',
+				'</div>',
+				'{{/chkFormElementType}}',
+				'{{#chkFormElementType type type="password"}}',
+				'<div class="form-control input-row">',
+					'<label>{{{label}}}</label>',
+					'<input type="{{type}}" name="{{name}}" readonly="{{readonly}}" data-key="{{key}}" id="{{id}}" value="{{value}}" />',
+				'</div>',
+				'{{/chkFormElementType}}',
+				'{{#chkFormElementType type type="static"}}',
+				'<div class="form-control input-row">',
+					'<label>{{{label}}}</label>',
+					'<span type="{{type}}" name="{{name}}" readonly="{{readonly}}" data-key="{{key}}" id="{{id}}" data-value="{{value}}" >{{{dispVal}}}</span>',
+				'</div>',
+				'{{/chkFormElementType}}',
+			'{{/each}}',
+			'</form>',
+			'{{#with btn}}',
+				'<button class="btn btn-block {{clz}}" {{disabled}} data-act="{{act}}">{{{label}}}</button>',
+			'{{/with}}',
+		'</div>'
+	].join('');
+	TemplateList.register('tpl_profile_form', tpl_profile_form);
+
 
 	var TplLib = function () {
 		return {
@@ -995,15 +1026,20 @@
 	HC.AboutMePageInit = function (pageName, pageParams) {
 		HC.initPageLayout({}, pageName);
 		var $wrapper = $('body > #ix_wrapper');
-		$wrapper.html([
-			'<header class="bar bar-nav">',
-				'<a class="icon icon-person pull-right" href="/#login" data-transition="slide-in" data-href="push"></a>',
-				'<h1 class="title">老板通</h1>',
-			'</header>',
-			'<div class="content">',
-				'<h1 class="title">个人信息</h1>',
-			'</div>'
-		].join(''));
+		var panel = new Hualala.Profile.ProfileController({
+			container : $wrapper,
+			view : new Hualala.Profile.ProfileView(),
+			model : new Hualala.Model.ProfileModel()
+		});
+		// $wrapper.html([
+		// 	'<header class="bar bar-nav">',
+		// 		'<a class="icon icon-person pull-right" href="/#login" data-transition="slide-in" data-href="push"></a>',
+		// 		'<h1 class="title">老板通</h1>',
+		// 	'</header>',
+		// 	'<div class="content">',
+		// 		'<h1 class="title">个人信息</h1>',
+		// 	'</div>'
+		// ].join(''));
 	};
 })(jQuery, window);
 (function ($, window) {
@@ -2007,6 +2043,49 @@
 	});
 
 	HM.ShopModel = ShopModel;
+	
+})(jQuery, window);
+(function ($, window) {
+	IX.ns("Hualala.Model");
+	var HG = Hualala.Global,
+		HM = Hualala.Model,
+		HT = Hualala.TypeDef,
+		HC = Hualala.Constants;
+
+	var getAllGroupIDs = function () {
+		var sessionData = Hualala.getSessionData();
+		var groupIDs = _.map(sessionData, function (grp) {
+			return $XP(grp, 'groupID');
+		});
+		return groupIDs.join(',');
+	};
+
+	var ProfileModel = Stapes.subclass({
+		constructor : function () {
+			this.profileType = null;
+			this.profileData = null;
+			this.profileHT = new IX.IListManager();
+		}
+	});
+
+	ProfileModel.proto({
+		init : function (cfg) {
+			var self = this;
+			this.profileType = $XP(cfg, 'profileType');
+			this.profileData = $XP(cfg, 'profileData');
+			_.each(this.profileData, function (el) {
+				var groupID = $XP(el, 'groupID');
+				self.profileHT.register(groupID, el);
+			});
+		},
+		getProfileInfo : function () {
+			var self = this;
+			var profileInfo = this.profileHT.getAll()[0];
+			return profileInfo;
+		}
+	});
+
+	HM.ProfileModel = ProfileModel;
 	
 })(jQuery, window);
 (function ($, window) {
@@ -3491,6 +3570,245 @@
 
 })(jQuery, window);
 (function ($, window) {
+	IX.ns("Hualala.Profile");
+	var HP = Hualala.PageRoute;
+	var HU = Hualala.UI;
+	var hbr = Handlebars,
+		TplLib = Hualala.TplLib;
+
+	var SingleBrandProfileKeys = 'loginName,userName,userMobile,loginPWD'.split(','),
+		MultiBrandProfileKeys = 'userMobile'.split(',');
+
+	var ProfileView = Stapes.subclass({
+		/**
+		 * 品牌列表页View层
+		 * @return {Obj}     品牌列表View层实例
+		 * 
+		 */
+		constructor : function () {
+			this.container = null;
+			this.model = null;
+			this.loadTemplates();
+			this.$curCnt = null;
+		}
+	});
+
+	ProfileView.proto({
+		init : function (cfg) {
+			this.container = $XP(cfg, 'container', null);
+			this.model = $XP(cfg, 'model', null);
+			this.profileType = $XP(cfg, 'profileType');
+
+			if (!this.container || !this.model) {
+				throw("Profile list view init failed!!");
+			}
+			this.initLayout();
+		},
+		initLayout : function () {
+			var layoutTpl = this.get('layoutTpl');
+			var htm = layoutTpl({
+				appBar : this.mapAppBarData()
+			});
+			this.container.html(htm);
+			this.$curCnt = this.container.find('.content').addClass('bi-profile');
+			this.bindEvent();
+		},
+		loadTemplates : function () {
+			var layoutTpl = hbr.compile(TplLib.get('tpl_page_layout'));
+			var formTpl = hbr.compile(TplLib.get('tpl_profile_form'));
+
+			hbr.registerPartial("appBar", TplLib.get('tpl_app_bar'));
+			hbr.registerPartial("iconBtn", TplLib.get('tpl_icon_btn'));
+			hbr.registerPartial("commonBtn", TplLib.get('tpl_common_btn'));
+
+			hbr.registerHelper('chkFormElementType', function (conditional, options) {
+				return (conditional == options.hash.type) ? options.fn(this) : options.inverse(this);
+			});
+
+			this.set({
+				layoutTpl : layoutTpl,
+				formTpl : formTpl
+			});
+		},
+		mapAppBarData : function () {
+			var self = this;
+			var parentNames = HP.getParentNamesByPath();
+			return {
+				clz : '',
+				commonBtn : {
+					items : [
+						{
+							clz : 'btn-link pull-right btn-logout',
+							label : '退出'
+						}
+					]
+				},
+				iconBtn : {
+					items : [
+						{
+							clz : 'icon-left-nav pull-left',
+							label : '返回',
+							href : HP.createPath($XP(parentNames[0], 'name', 'main'), ['day'])
+						}
+					]
+				},
+				title : "我的"
+			};
+
+		},
+		mapProfileRenderData : function () {
+			var self = this;
+			var profile = self.model.getProfileInfo();
+			var items = [];
+			if (self.profileType == 'multi') {
+				_.each(SingleBrandProfileKeys, function (k) {
+					var v = $XP(profile, k, ''),
+						dispVal = '', label = '';
+					// loginName,userMobile
+					switch (k) {
+						case 'userMobile' :
+							label = '手机号';
+							dispVal = $XP(Hualala.Common.codeMask(v, 3, -4), 'val', '');
+							break;
+						case 'userName':
+							label = '姓名';
+							dispVal = v;
+							break;
+						case 'loginName':
+							label = '子账号';
+							dispVal = v;
+							break;
+						case 'loginPWD':
+							label = '登录密码';
+							if (IX.isEmpty(v)) {
+								dispVal = $XP(Hualala.Common.codeMask('123456', 0), 'val', '');
+							} else {
+								dispVal = $XP(Hualala.Common.codeMask(v, 0), 'val', '');
+							}
+							
+							break;
+						default :
+							break;
+					};
+					items.push({
+						type : 'static',
+						label : label,
+						value : v,
+						dispVal : dispVal,
+						name : k,
+						id : k + '_' + IX.id(),
+						key : k
+					});
+				});
+
+			} else {
+				_.each(MultiBrandProfileKeys, function (k) {
+					var v = $XP(profile, k, '');
+					v = Hualala.Common.codeMask(v, 3, -4);
+					items.push({
+						type : 'static',
+						label : '手机号',
+						value : v.orig,
+						dispVal : v.val,
+						name : 'user_mobile',
+						id : 'user_mobile' + '_' + IX.id(),
+						key : k
+					});
+				});
+			}
+			return {
+				clz : '',
+				items : items,
+				btn : {
+					clz : 'btn-default btn-logout btn-lg',
+					act : 'logout',
+					disabled : '',
+					label : '退出'
+				}
+			};
+		},
+		render : function () {
+			var self = this;
+			var formTpl = self.get('formTpl');
+			var renderData = self.mapProfileRenderData();
+			var htm = formTpl(renderData);
+			self.$curCnt.empty().html(htm);
+		},
+		bindEvent : function () {
+			var self = this;
+			self.container.on('click', '.btn-logout', function (e) {
+				HP.jumpPage(HP.createPath('login'));
+			});
+			
+		}
+	});
+
+	Hualala.Profile.ProfileView = ProfileView;
+
+})(jQuery, window);
+(function ($, window) {
+	IX.ns("Hualala.Profile");
+	var HP = Hualala.PageRoute;
+
+	var ProfileController = Stapes.subclass({
+		constructor : function (cfg) {
+			this.container = $XP(cfg, 'container', null);
+			this.view = $XP(cfg, 'view', null);
+			this.model = $XP(cfg, 'model', null);
+			this.profileType = null;
+			this.profileData = Hualala.getSessionData();
+			if (!this.container || !this.view || !this.model) {
+				throw("Brand Detail Controller build failed!");
+			}
+			
+			var pageCtx = HP.getPageContextByPath(),
+				pageParams = $XP(pageCtx, 'params', []);
+			
+			this.bindEvent();
+			this.bindViewEvent();
+			this.bindModelEvent();
+			this.init();
+		}
+	});
+
+	ProfileController.proto({
+		init : function () {
+			if (this.profileData.length > 1) {
+				// 多品牌账户
+				this.profileType = "multi";
+			} else {
+				// 单品牌账户
+				this.profileType = "single";
+			}
+			this.model.init({
+				profileType : this.profileType,
+				profileData : this.profileData
+			});
+			this.view.init({
+				model : this.model,
+				container : this.container,
+				profileType : this.profileType
+			});
+			this.view.emit('render');
+		},
+		bindEvent : function () {
+
+		},
+		bindViewEvent : function () {
+			this.view.on({
+				render : function () {
+					this.view.render();
+				}
+			}, this);
+		},
+		bindModelEvent : function () {
+
+		}
+	});
+
+	Hualala.Profile.ProfileController = ProfileController;
+})(jQuery, window);
+(function ($, window) {
 	IX.ns("Hualala");
 
 	var sessionData = null;
@@ -3518,7 +3836,7 @@
 				HPR.jumpPage(HPR.createPath('login'));
 				log("Session Data Load Faild!! resultcode = " + $XP(appData, "resultcode", "") + "; resultMsg = " + $XP(appData, 'resultmsg', ''));
 			}
-			loadSession($XP(appData, 'data', {}), function () {
+			loadSession($XP(appData, 'data.records', []), function () {
 				log("Merchant Sys INIT DONE in (ms): " + (IX.getTimeInMS() - tick));
 				cbFn();
 			});

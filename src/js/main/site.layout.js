@@ -69,14 +69,19 @@
 	HC.AboutMePageInit = function (pageName, pageParams) {
 		HC.initPageLayout({}, pageName);
 		var $wrapper = $('body > #ix_wrapper');
-		$wrapper.html([
-			'<header class="bar bar-nav">',
-				'<a class="icon icon-person pull-right" href="/#login" data-transition="slide-in" data-href="push"></a>',
-				'<h1 class="title">老板通</h1>',
-			'</header>',
-			'<div class="content">',
-				'<h1 class="title">个人信息</h1>',
-			'</div>'
-		].join(''));
+		var panel = new Hualala.Profile.ProfileController({
+			container : $wrapper,
+			view : new Hualala.Profile.ProfileView(),
+			model : new Hualala.Model.ProfileModel()
+		});
+		// $wrapper.html([
+		// 	'<header class="bar bar-nav">',
+		// 		'<a class="icon icon-person pull-right" href="/#login" data-transition="slide-in" data-href="push"></a>',
+		// 		'<h1 class="title">老板通</h1>',
+		// 	'</header>',
+		// 	'<div class="content">',
+		// 		'<h1 class="title">个人信息</h1>',
+		// 	'</div>'
+		// ].join(''));
 	};
 })(jQuery, window);

@@ -26,7 +26,7 @@
 				HPR.jumpPage(HPR.createPath('login'));
 				log("Session Data Load Faild!! resultcode = " + $XP(appData, "resultcode", "") + "; resultMsg = " + $XP(appData, 'resultmsg', ''));
 			}
-			loadSession($XP(appData, 'data', {}), function () {
+			loadSession($XP(appData, 'data.records', []), function () {
 				log("Merchant Sys INIT DONE in (ms): " + (IX.getTimeInMS() - tick));
 				cbFn();
 			});
