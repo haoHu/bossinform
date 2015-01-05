@@ -4678,7 +4678,7 @@ var Pymatch=(function(){
 	Hualala.Global.SWF_ROOT = "./swf";
 	Hualala.Global.workMode = "pesudo";
 	Hualala.Global.ECHART_PATH = "./js/echarts/echarts-plain.min.js";
-	Hualala.Global.AJAX_DOMAIN = "http://zzc.shopbi.hualala.com:8080";
+	Hualala.Global.AJAX_DOMAIN = "http://shopbi.hualala.com";
 	
 })();
 (function () {

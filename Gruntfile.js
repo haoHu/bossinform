@@ -374,6 +374,16 @@ module.exports = function (grunt) {
 				files : {
 					'.tmp/index.html' : '<%=config.src %>/index.html'
 				}
+			},
+			mu : {
+				files : {
+					'<%=config.dist %>/index.html' : '<%=config.dist %>/index.html'
+				}
+			},
+			dohko : {
+				files : {
+					'<%=config.dist %>/index.html' : '<%=config.dist %>/index.html'
+				}
 			}
 		}
 
@@ -390,11 +400,11 @@ module.exports = function (grunt) {
 		if (grunt.option('allow-remote')) {
 			grunt.config.set('connect.options.hostname', '0.0.0.0');
 		}
-		if (target === 'dist') {
+		if (target === 'dist' || target === 'mu' || target === 'dohko') {
 			// 预览发布后代码
 			// 执行grunt任务队列，先进行代码发布工作，再启动服务器
 			// @TODO
-			return grunt.task.run(['build', 'connect:dist:keepalive']);
+			return grunt.task.run(['build' + ':' + target, 'connect:dist:keepalive']);
 		}
 		// 预览开发代码
 		// 执行grunt任务队列
@@ -465,7 +475,43 @@ module.exports = function (grunt) {
 	// 	'htmlmin'
 	// ]);
 
-	grunt.registerTask('build', function () {
+	// grunt.registerTask('build', function () {
+	// 	grunt.task.run([
+	// 		// 清空发布目录
+	// 		'clean:dist',
+	// 		// 加载bower依赖
+	// 		'wiredep',
+	// 		// 批量压缩预处理任务
+	// 		'useminPrepare',
+	// 		// 加载并发处理，缩短发布时间
+	// 		'concurrent:dist',
+	// 		// 合并文件
+	// 		'concat',
+	// 		// 压缩css文件
+	// 		'cssmin',
+	// 		// 压缩脚本
+	// 		'uglify',
+	// 		// 拷贝资源文件
+	// 		'copy:dist',
+	// 		// 'requirejs',
+	// 		// 为引用文件增加md5时间戳
+	// 		'rev',
+	// 		// 执行usemin任务
+	// 		'usemin',
+	// 		'targethtml:dist',
+	// 		'htmlmin'
+	// 	]);
+	// });
+
+	grunt.registerTask('build', function (target) {
+		var htmlTarget = '';
+		if (target == 'mu') {
+			htmlTarget = target;
+		} else if (target == 'dohko') {
+			htmlTarget = target;
+		} else {
+			htmlTarget = 'dist';
+		}
 		grunt.task.run([
 			// 清空发布目录
 			'clean:dist',
@@ -488,10 +534,11 @@ module.exports = function (grunt) {
 			'rev',
 			// 执行usemin任务
 			'usemin',
-			'targethtml:dist',
+			'targethtml:' + htmlTarget,
 			'htmlmin'
 		]);
 	});
+
 
 
 
