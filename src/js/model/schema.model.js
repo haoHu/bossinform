@@ -147,6 +147,11 @@
 				// 		_model : m
 				// 	});
 				// });
+				if (!d) {
+					return IX.inherit(d, {
+						data : []
+					});
+				}
 				var data = _.map(d.data, function (m) {
 					return IX.inherit(m.getAll(), {
 						_model : m

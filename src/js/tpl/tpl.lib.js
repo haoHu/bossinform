@@ -292,7 +292,7 @@
 			'<div class="chart-canvas">',
 			'</div>',
 			'{{#each items}}',
-			'<div class="table-row chart-legend {{clz}}">',
+			'<div class="table-row chart-legend {{clz}}" data-label="{{label}}" data-value="{{value}}" data-bg="{{bgColor}}">',
 				'<span class="table-cell label">',
 					'<span class="legend-icon {{iconClz}}"></span>',
 					'<span>{{{label}}}</span>',

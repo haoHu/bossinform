@@ -218,6 +218,9 @@
 				});
 				hisDateStr = hisDateList[hisShowIdx] + '(' + hisShowIdx + ')';
 				$date.html(hisDateStr);
+				self.$curCnt.find('.table-cell.hisdate:visible .chart-canvas').each(function (i, el) {
+					self.drawChart($(el));
+				});
 			});
 			
 		},
@@ -599,11 +602,39 @@
 			var htm = cntTpl(renderData);
 			self.$curCnt && self.$curCnt.remove();
 			self.$curCnt = $(htm).appendTo(self.container.find('.content'));
-
+			self.$curCnt.find('.table-cell.curdate .chart-canvas').each(function (i, el) {
+				self.drawChart($(el));
+			});
+			self.$curCnt.find('.table-cell.hisdate:visible .chart-canvas').each(function (i, el) {
+				self.drawChart($(el));
+			});
 		},
 		getChartPagePath : function (chartType) {
 			var self = this;
 			return HP.createPath('chart', [self.curCycleType, self.curGroupIDLst, self.curCityIDLst, self.curShopIDLst, chartType, '']);
+		},
+		drawChart : function ($chartCanvas) {
+			var self = this;
+			var $tblCell = $chartCanvas.parents('.table-cell'),
+				isCurDate = $tblCell.hasClass('curdate') ? true : false,
+				$legends = $chartCanvas.parent().find('.chart-legend');
+			var data = [];
+			$legends.each(function (i, el) {
+				var bgColor = i != 0 ? '#CCC' : (isCurDate ? '#F27935' : '#1FBBA6');
+				var $el = $(el);
+				data.push({
+					color : bgColor,
+					// label : $el.attr('data-label'),
+					value : parseInt($el.attr('data-value'))
+				});
+			});
+			var $canvas = $('<canvas class="chart-canvas"></canvas>');
+				$canvas.attr('width', $chartCanvas.width()).attr('height', $chartCanvas.height());
+			$chartCanvas.empty().append($canvas);
+			var ctx = $canvas[0].getContext("2d");
+			var chart = new Chart(ctx).Pie(data, {
+				animation : true
+			});
 		}
 	});
 

@@ -47,11 +47,14 @@
 				load : function (params) {
 					var self = this;
 					self.init(params);
-					self.model.load(function (res) {
-						self.view.emit('render');
-					}, function (res) {
-						// TODO fail handle
-					});
+					setTimeout(function () {
+						self.model.load(function (res) {
+							self.view.emit('render');
+						}, function (res) {
+							// TODO fail handle
+						});
+					}, 500);
+					
 				}
 			}, this);
 			

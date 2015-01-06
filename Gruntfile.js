@@ -416,7 +416,7 @@ module.exports = function (grunt) {
 		// @TODO
 		grunt.task.run([
 			'clean:server',
-			// 'targethtml:dev',
+			'targethtml:dev',
 			'wiredep',
 			'concurrent:server',
 			'connect:livereload',
@@ -535,7 +535,7 @@ module.exports = function (grunt) {
 			// 执行usemin任务
 			'usemin',
 			'targethtml:' + htmlTarget,
-			'htmlmin'
+			// 'htmlmin'
 		]);
 	});
 

@@ -120,7 +120,7 @@
 		// APP Login View
 		// 登录
 		{
-			name : "login", path : "/#login", reg : /login$/, bodyClz : "",
+			name : "login", path : "#login", reg : /login$/, bodyClz : "",
 			PageInitiator : "Hualala.Common.LoginInit", label : "登录"
 		},
 		// APP Brand Schema List View 
@@ -129,7 +129,7 @@
 			cy : cycle 周期条件[day|week|month|quarter]
 		 */
 		{
-			name : "main", path : "/#schema/cy{cycle}", bodyClz : "",
+			name : "main", path : "#schema/cy{cycle}", bodyClz : "",
 			reg : /schema\/cy(.*)$/, 
 			PageInitiator : "Hualala.Common.SchemaPageInit", label : "老板通"
 		},
@@ -144,7 +144,7 @@
 			//e : end date 结束日期(SecondTick)
 		 */
 		{
-			name : "brand", path : "/#brand/cy{cycle}/g{groupID}/c{cityID}/s{shopID}",
+			name : "brand", path : "#brand/cy{cycle}/g{groupID}/c{cityID}/s{shopID}",
 			reg : /brand\/cy(.*)\/g(.*)\/c(.*)\/s(.*)$/,
 			PageInitiator : "Hualala.Common.BrandPageInit", label : "品牌详情",
 			parentName : "main"
@@ -160,7 +160,7 @@
 			d : density 图表密度 
 		 */
 		{
-			name : "chart", path : "/#brand/chart/cy{cycle}/g{groupID}/c{cityID}/s{shopID}/oi{opID}/d{density}",
+			name : "chart", path : "#brand/chart/cy{cycle}/g{groupID}/c{cityID}/s{shopID}/oi{opID}/d{density}",
 			reg : /brand\/chart\/cy(.*)\/g(.*)\/c(.*)\/s(.*)\/oi(.*)\/d(.*)$/,
 			PageInitiator : "Hualala.Common.BrandChartPageInit", label : "指标统计图表",
 			parentName : "brand"
@@ -168,7 +168,7 @@
 		// About me page
 		// 个人信息页面
 		{
-			name : "aboutme", path : "/#aboutme",
+			name : "aboutme", path : "#aboutme",
 			reg : /aboutme$/,
 			PageInitiator : "Hualala.Common.AboutMePageInit", label : "个人信息",
 			parentName : "main"

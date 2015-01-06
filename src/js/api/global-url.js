@@ -3,7 +3,7 @@
 	var urlEngine = Hualala.urlEngine;
 	urlEngine.reset({imgUrl : Hualala.Global.IMAGE_ROOT});
 	Hualala.ajaxEngine.reset({
-		siteUrl : Hualala.Global.HOME
+		siteUrl : Hualala.Global.CommonSite
 	});
 	urlEngine.mappingUrls([
 		["img_logo", "/logo.png", "img"],

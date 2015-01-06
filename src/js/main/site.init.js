@@ -44,7 +44,7 @@
 		});
 		Hualala.ajaxEngine.init({
 			ajaxFn : $.ajax,
-			baseUrl : Hualala.Global.HOME,
+			baseUrl : Hualala.Global.CommonSite,
 			commonUrl : Hualala.Global.CommonSite,
 			imgUrl : Hualala.Global.IMAGE_ROOT
 		});

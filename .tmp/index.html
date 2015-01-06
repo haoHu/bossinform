@@ -33,12 +33,12 @@
 		<link rel="stylesheet" href="css/core.css" />
 		<!-- endbuild -->
 
-		<!--(if target dev)>
+		
 		<!-- For develop needed scripts -->
 		<script type="text/javascript">
 			window.IXDEBUG = true;
 		</script>
-		<!(endif)-->
+		
 
 	</head>
 	<body>
@@ -124,14 +124,14 @@
 
 		<!-- endbuild -->
 
-		<!--(if target dev)>
+		
 		<!-- For develop needed files -->
 		<!-- build:js ./js/devdep.js -->
 		<script type="text/javascript" src="../test/data/global-callserver-common.js"></script>
 		<!-- endbuild -->
-		<!(endif)-->
+		
 
-		<!--(if target dev)>
+		
 		<!-- For develop needed scripts -->
 		<script type="text/javascript" src="./test.js"></script>
 		<script type="text/javascript">
@@ -145,36 +145,13 @@
 				Hualala.init();
 			});
 		</script>-->
-		<!(endif)-->
+		
 
-		<!--(if target dist)>
-		<!-- For publish needed scripts -->
-		<script type="text/javascript">
-			$(document).ready(function () {
-				Hualala.init();
-			});
-		</script>
-		<!(endif)-->
+		
 
-		<!--(if target mu)>
-		<!-- For publish needed scripts -->
-		<script type="text/javascript">
-			Hualala.Global.AJAX_DOMAIN = "http://mu.shopbi.hualala.com";
-			$(document).ready(function () {
-				Hualala.init();
-			});
-		</script>
-		<!(endif)-->
+		
 
-		<!--(if target dohko)>
-		<!-- For publish needed scripts -->
-		<script type="text/javascript">
-			Hualala.Global.AJAX_DOMAIN = "http://dohko.shopbi.hualala.com";
-			$(document).ready(function () {
-				Hualala.init();
-			});
-		</script>
-		<!(endif)-->
+		
 
 
 	</body>

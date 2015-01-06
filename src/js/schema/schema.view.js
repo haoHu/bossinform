@@ -141,6 +141,9 @@
 				self.curCycleType = cycleType;
 				self.emit('switchCycle');
 			});
+			self.container.on('click', '.brand-item > a', function (e) {
+				e.preventDefault();
+			});
 		}
 	});
 
