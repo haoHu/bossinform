@@ -448,7 +448,7 @@
 		{key : 'cycleType', clz : 'filter-cycle'}
 	];
 
-	Hualala.TypeDef.MaxBrandHistoryCount = 36;
+	Hualala.TypeDef.MaxBrandHistoryCount = 34;
 
 	Hualala.TypeDef.CustomStructure = [
 		{key : "vipOrderAmountTotal", label : "会员", bgColor : '#1FBBA6'},

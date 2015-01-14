@@ -8,10 +8,11 @@
 			this.container = $XP(cfg, 'container', null);
 			this.view = $XP(cfg, 'view', null);
 			this.model = $XP(cfg, 'model', null);
+
 			if (!this.container || !this.view || !this.model) {
 				throw("Brand Detail Controller build failed!");
 			}
-			
+			this.container.addClass('statistic-view');
 			var pageCtx = HP.getPageContextByPath(),
 				pageParams = $XP(pageCtx, 'params', []);
 
@@ -29,6 +30,50 @@
 	});
 
 	BrandDetailController.proto({
+		bindEvent : function () {
+			this.on({
+				load : function (params) {
+					var self = this;
+					self.init(params);
+					self.emit('toggleMask', {
+						act : 'show'
+					});
+					self.model.load(function (res) {
+						self.view.initToolbar(function () {
+							self.view.emit('render');
+							self.emit('toggleMask', {
+								act : 'hide',
+								cbFn : function () {
+									Hualala.UI.TopTip({
+										msg : '加载成功',
+										type : 'success'
+									});
+								}
+							});
+						});
+					}, function (res) {
+						// TODO fail handle
+						self.emit('toggleMask', {
+							act : 'hide',
+							cbFn : function () {
+								Hualala.UI.TopTip({
+									msg : $XP(res, 'resultmsg', '加载失败'),
+									type : 'danger'
+								});
+							}
+						});
+					});
+				},
+				toggleMask : function (opts) {
+					var self = this;
+					var $body = $('body');
+					var act = $XP(opts, 'act', 'hide'),
+						cbFn = $XF(opts, 'cbFn');
+					$body.mask && $body.mask(act, cbFn);
+				}
+			}, this);
+			
+		},
 		bindViewEvent : function () {
 			this.view.on({
 				render : function () {
@@ -38,18 +83,39 @@
 				switchCycle : function () {
 					var self = this;
 					var params = self.model.getQueryParams();
+					self.emit('toggleMask', {
+						act : 'show'
+					});
 					self.model.updateQueryParams(IX.inherit(params, {
 						cycleType : self.view.curCycleType
 					}));
 					self.model.load(function (res) {
 						self.view.emit('render');
+						self.emit('toggleMask', {
+							act : 'hide',
+							cbFn : function () {
+								Hualala.UI.TopTip({
+									msg : '加载成功',
+									type : 'success'
+								});
+							}
+						});
 					}, function (res) {
-
+						self.emit('toggleMask', {
+							act : 'hide',
+							cbFn : function () {
+								Hualala.UI.TopTip({
+									msg : $XP(res, 'resultmsg', '加载失败'),
+									type : 'danger'
+								});
+							}
+						});
 					});
 				},
 				switchBrand : function () {
 					var self = this;
 					var params = self.model.getQueryParams();
+					self.emit('toggleMask', {act : 'show'});
 					self.model.updateQueryParams(IX.inherit(params, {
 						groupIDLst : self.view.curGroupIDLst,
 						shopIDLst : '',
@@ -60,8 +126,25 @@
 					self.view.resetShopFilter();
 					self.model.load(function (res) {
 						self.view.emit('render');
+						self.emit('toggleMask', {
+							act : 'hide',
+							cbFn : function () {
+								Hualala.UI.TopTip({
+									msg : '加载成功',
+									type : 'success'
+								});
+							}
+						});
 					}, function (res) {
-
+						self.emit('toggleMask', {
+							act : 'hide',
+							cbFn : function () {
+								Hualala.UI.TopTip({
+									msg : $XP(res, 'resultmsg', '加载失败'),
+									type : 'danger'
+								});
+							}
+						});
 					});
 				},
 				switchShop : function (opts) {
@@ -69,6 +152,7 @@
 					var params = self.model.getQueryParams();
 					var cityID = $XP(opts, 'cityID'),
 						shopID = $XP(opts, 'shopID');
+					self.emit('toggleMask', {act : 'show'});
 					if (IX.isEmpty(shopID) && IX.isEmpty(cityID)) {
 						self.model.updateQueryParams(IX.inherit(params, {
 							shopIDLst : '',
@@ -101,8 +185,25 @@
 					
 					self.model.load(function (res) {
 						self.view.emit('render');
+						self.emit('toggleMask', {
+							act : 'hide',
+							cbFn : function () {
+								Hualala.UI.TopTip({
+									msg : '加载成功',
+									type : 'success'
+								});
+							}
+						});
 					}, function (res) {
-
+						self.emit('toggleMask', {
+							act : 'hide',
+							cbFn : function () {
+								Hualala.UI.TopTip({
+									msg : $XP(res, 'resultmsg', '加载失败'),
+									type : 'danger'
+								});
+							}
+						});
 					});
 
 				},
@@ -134,18 +235,37 @@
 				switchCycle : function () {
 					var self = this;
 					var params = self.model.getQueryParams();
+					self.emit('toggleMask', {act : 'show'});
 					self.model.updateQueryParams(IX.inherit(params, {
 						cycleType : self.view.curCycleType
 					}));
 					self.model.load(function (res) {
 						self.view.emit('render');
+						self.emit('toggleMask', {
+							act : 'hide',
+							cbFn : function () {
+								Hualala.UI.TopTip({
+									msg : '加载成功',
+									type : 'success'
+								});
+							}
+						});
 					}, function (res) {
-
+						self.emit('toggleMask', {
+							act : 'hide',
+							cbFn : function () {
+								Hualala.UI.TopTip({
+									msg : $XP(res, 'resultmsg', '加载失败'),
+									type : 'danger'
+								});
+							}
+						});
 					});
 				},
 				switchBrand : function () {
 					var self = this;
 					var params = self.model.getQueryParams();
+					self.emit('toggleMask', {act : 'show'});
 					self.model.updateQueryParams(IX.inherit(params, {
 						groupIDLst : self.view.curGroupIDLst,
 						shopIDLst : '',
@@ -156,8 +276,25 @@
 					self.view.resetShopFilter();
 					self.model.load(function (res) {
 						self.view.emit('render');
+						self.emit('toggleMask', {
+							act : 'hide',
+							cbFn : function () {
+								Hualala.UI.TopTip({
+									msg : '加载成功',
+									type : 'success'
+								});
+							}
+						});
 					}, function (res) {
-
+						self.emit('toggleMask', {
+							act : 'hide',
+							cbFn : function () {
+								Hualala.UI.TopTip({
+									msg : $XP(res, 'resultmsg', '加载失败'),
+									type : 'danger'
+								});
+							}
+						});
 					});
 				},
 				switchShop : function (opts) {
@@ -165,6 +302,7 @@
 					var params = self.model.getQueryParams();
 					var cityID = $XP(opts, 'cityID'),
 						shopID = $XP(opts, 'shopID');
+					self.emit('toggleMask', {act : 'show'});
 					if (IX.isEmpty(shopID) && IX.isEmpty(cityID)) {
 						self.model.updateQueryParams(IX.inherit(params, {
 							shopIDLst : ''
@@ -194,14 +332,33 @@
 					}
 					self.model.load(function (res) {
 						self.view.emit('render');
+						self.emit('toggleMask', {
+							act : 'hide',
+							cbFn : function () {
+								Hualala.UI.TopTip({
+									msg : '加载成功',
+									type : 'success'
+								});
+							}
+						});
 					}, function (res) {
-
+						self.emit('toggleMask', {
+							act : 'hide',
+							cbFn : function () {
+								Hualala.UI.TopTip({
+									msg : $XP(res, 'resultmsg', '加载失败'),
+									type : 'danger'
+								});
+							}
+						});
 					});
 
 				},
 				switchIndicator : function () {
 					var self = this;
+					self.emit('toggleMask', {act : 'show'});
 					self.view.emit('render');
+					self.emit('toggleMask', {act : 'hide'});
 				}
 			}, this);
 		}

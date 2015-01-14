@@ -533,12 +533,18 @@
   };
 
   var triggerStateChange = function () {
-    var e = new CustomEvent('push', {
-      detail: { state: getCached(PUSH.id) },
-      bubbles: true,
-      cancelable: true
-    });
-
+    var e = null;
+    if (window.CustomEvent) {
+      e = new CustomEvent('push', {
+        detail: { state: getCached(PUSH.id) },
+        bubbles: true,
+        cancelable: true
+      });
+    } else {
+      e = document.createEvent('Event');
+      e.initEvent('push', true, true);
+    }
+    
     window.dispatchEvent(e);
   };
 
@@ -831,11 +837,17 @@
     slider.style['-webkit-transition-duration'] = '.2s';
     slider.style.webkitTransform = 'translate3d(' + offsetX + 'px,0,0)';
 
-    e = new CustomEvent('slide', {
-      detail: { slideNumber: Math.abs(slideNumber) },
-      bubbles: true,
-      cancelable: true
-    });
+    if (window.CustomEvent) {
+      e = new CustomEvent('slide', {
+        detail: { slideNumber: Math.abs(slideNumber) },
+        bubbles: true,
+        cancelable: true
+      });
+    } else {
+      e = document.createEvent('Event');
+      e.initEvent('slide', true, true);
+    }
+    
 
     slider.parentNode.dispatchEvent(e);
   };
@@ -951,11 +963,17 @@
 
     toggle.classList[slideOn ? 'add' : 'remove']('active');
 
-    e = new CustomEvent('toggle', {
-      detail: { isActive: slideOn },
-      bubbles: true,
-      cancelable: true
-    });
+    if (window.CustomEvent) {
+      e = new CustomEvent('toggle', {
+        detail: { isActive: slideOn },
+        bubbles: true,
+        cancelable: true
+      });
+    } else {
+      e = document.createEvent('Event');
+      e.initEvent('toggle', true, true);
+    }
+    
 
     toggle.dispatchEvent(e);
 

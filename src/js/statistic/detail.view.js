@@ -47,6 +47,7 @@
 		loadTemplates : function () {
 			var layoutTpl = hbr.compile(TplLib.get('tpl_page_layout'));
 			var filterBarTpl = hbr.compile(TplLib.get('tpl_filter_toolbar'));
+			var headerTpl = hbr.compile(TplLib.get('tpl_statistic_header'));
 			var cntTpl = hbr.compile(TplLib.get('tpl_statistic_table'));
 
 			hbr.registerPartial("appBar", TplLib.get('tpl_app_bar'));
@@ -62,6 +63,7 @@
 			});
 
 			this.set({
+				headerTpl : headerTpl,
 				layoutTpl : layoutTpl,
 				filterBarTpl : filterBarTpl,
 				cntTpl : cntTpl
@@ -161,12 +163,20 @@
 			});
 			var url = $XP(group, 'groupLogoImageUrl', '');
 			url = IX.isEmpty(url) ? Hualala.Global.getDefaultImage("blank") :
-				Hualala.Common.getSourceImage(groupLogoImageUrl, {
+				Hualala.Common.getSourceImage(url, {
 					width : 40,
 					height : 40,
 					quality : 50
 				});
 			return url;
+		},
+		getGroupName : function (groupID) {
+			var sessionData = Hualala.getSessionData();
+			var group = _.find(sessionData, function (g) {
+				return $XP(g, 'groupID') === groupID;
+			});
+			var groupName = $XP(group, 'groupName', '');
+			return groupName;
 		},
 		initLayout : function () {
 			var self = this;
@@ -176,17 +186,52 @@
 				appBar : this.mapAppBarData()
 			});
 			this.container.html(htm);
+			
+			self.bindCntEvent();
+		},
+		initToolbar : function (cbFn) {
+			var self = this;
+			var toolbarTpl = this.get('filterBarTpl');
+			// Hualala.ShopManager.getShopDataSetByGroupID(this.curGroupIDLst, function (cities) {
+			// 	var htm = toolbarTpl(self.mapFilterBarData(cities));
+			// 	var $content = self.container.find('.content'),
+			// 		$toolbar = $content.find('.bi-toolbar');
+			// 	if ($toolbar.length > 0) {
+			// 		$toolbar.remove();
+			// 	}
+			// 	$content.prepend(htm);
+			// 	self.bindToolbarEvent();
+				
+			// });
+			// For fix android below 4.4 in webkit bug
 			Hualala.ShopManager.getShopDataSetByGroupID(this.curGroupIDLst, function (cities) {
 				var htm = toolbarTpl(self.mapFilterBarData(cities));
-				self.container.find('.content').html(htm);
+				var $content = self.container.find('.content'),
+					$toolbar = self.container.find('.bi-toolbar');
+				if ($toolbar.length > 0) {
+					$toolbar.remove();
+				}
+				$toolbar = $(htm);
+				$toolbar.insertBefore($content);
 				self.bindToolbarEvent();
-				self.bindCntEvent();
+				IX.isFn(cbFn) && cbFn();
 			});
-			
+		},
+		getHisDateStr : function (v) {
+			var dateStr = v.split('-');
+			if (dateStr.length == 2) {
+				dateStr = _.map(dateStr, function (d) {
+					return d;
+				});
+				dateStr = dateStr.join('<br/>-');
+			} else {
+				dateStr = dateStr[0];
+			}
+			return dateStr;
 		},
 		bindCntEvent : function () {
 			var self = this;
-			self.container.on('click', '.bi-table > .table-header > .hisdate > .icon', function (e) {
+			self.container.on('click', '.table-header > .hisdate .icon', function (e) {
 				var $btn = $(this);
 				var $date = $btn.parent().find('.date');
 				var hisDateList = self.curDateList.slice(1);
@@ -216,8 +261,8 @@
 					$hisCols.addClass('hidden');
 					$hisCols.eq(hisShowIdx).removeClass('hidden');
 				});
-				hisDateStr = hisDateList[hisShowIdx] + '(' + hisShowIdx + ')';
-				$date.html(hisDateStr);
+				hisDateStr = hisDateList[hisShowIdx];
+				$date.html(self.getHisDateStr(hisDateStr));
 				self.$curCnt.find('.table-cell.hisdate:visible .chart-canvas').each(function (i, el) {
 					self.drawChart($(el));
 				});
@@ -328,7 +373,7 @@
 						reportDate = reportDate.split('-');
 						reportDate = _.map(reportDate, function (v) {
 							var _v = HCOM.formatDateTimeValue(v);
-							return IX.Date.getDateByFormat(_v, 'YYYY.MM');
+							return IX.Date.getDateByFormat(_v, 'yyyy.MM');
 						});
 						reportDate = reportDate[0];
 						break;
@@ -336,7 +381,7 @@
 						reportDate = reportDate.split('-');
 						reportDate = _.map(reportDate, function (v) {
 							var _v = HCOM.formatDateTimeValue(v);
-							return IX.Date.getDateByFormat(_v, 'YYYY.MM');
+							return IX.Date.getDateByFormat(_v, 'yyyy.MM');
 						});
 						reportDate = reportDate.join('-');
 						break;
@@ -407,15 +452,16 @@
 			var header = _.map(dateList.slice(0, 2), function (v, i) {
 				var isHistory = i == 0 ? false : true;
 				var btns = null;
+				var dateStr = self.getHisDateStr(v);
 				return IX.inherit({
-					dateStr : v,
+					dateStr : dateStr,
 					clz : isHistory ? 'hisdate' : 'curdate',
 					isHistory : isHistory
 				}, (isHistory ? {
 					iconBtn : {
 						items : [
-							{clz : 'icon-left pull-left', href : '', label : '向前'},
-							{clz : 'icon-right pull-right', href : '', label : '先后'}
+							{clz : 'icon-left pull-left', href : 'javascript:void 0;', label : '向前'},
+							{clz : 'icon-right pull-right', href : 'javascript:void 0;', label : '先后'}
 						]
 					}
 				} : {}));
@@ -433,7 +479,7 @@
 			var cols = _.map(colData, function (col, i) {
 				var isCurCol = i == 0 ? true : false;
 				var hidden = i > 1 ? 'hidden' : '';
-				
+				var valIsCash = (keys + ',').indexOf('cashUnit') > -1 ? true : false;
 				var _col = IX.inherit({
 					clz : (isCurCol ? 'curdate' : 'hisdate'),
 					label : label,
@@ -455,10 +501,25 @@
 							_col['unit'] = val;
 							break;
 						default : 
+							// _col['value'] = Hualala.Common.Math.shortyNumeric(val);
 							_col['value'] = val;
 							break;
 					}
 				});
+				var _val = $XP(_col, 'value', 0) + '';
+				_val = Hualala.Common.Math.mapNumeric(_val);
+				if (_val.orig.split('.')[0].length > 4) {
+					_col['value'] = Number(_val.shorty);
+					_col['unit'] = _val.scale + _col['unit'];
+				}
+				var _val1 = $XP(_col, 'waitCheckoutOrderAmountTotal', 0) + '';
+				_val1 = Hualala.Common.Math.mapNumeric(_val1);
+				if (_val1.orig.split('.')[0].length > 4) {
+					_col['waitCheckoutOrderAmountTotal'] = Number(_val1.shorty);
+					_col['waitCheckoutOrderUnit'] = _val1.scale + Hualala.Constants.CashUnit;
+				} else {
+					_col['waitCheckoutOrderUnit'] = Hualala.Constants.CashUnit;
+				}
 				return _col;
 			});
 			return cols;
@@ -474,6 +535,7 @@
 			var cols = _.map(colData, function (col, i) {
 				var isCurCol = i == 0 ? true : false;
 				var hidden = i > 1 ? 'hidden' : '';
+				var _val = null;
 				var _col = {
 					clz : (isCurCol ? 'curdate' : 'hisdate'),
 					label : label,
@@ -501,6 +563,13 @@
 									break;
 							}
 						});
+						var _val = $XP(o, 'value', 0) + '';
+						_val = Hualala.Common.Math.mapNumeric(_val);
+						if (_val.orig.split('.')[0].length > 4) {
+							o['value'] = Number(_val.shorty);
+							o['unit'] = _val.scale + o['unit'];
+						}
+
 						return o;
 					})
 				};
@@ -533,6 +602,14 @@
 							_col['items'] = val;
 							break;
 					}
+				});
+				_col['items'] = _.map(_col['items'], function (item) {
+					var _val = $XP(item, 'payAmount', 0) + '';
+					_val = Hualala.Common.Math.mapNumeric(_val);
+					return IX.inherit(item, {
+						value : _val.orig.split('.')[0].length > 4 ? Number(_val.shorty) : Number(_val.orig),
+						unit : _val.orig.split('.')[0].length > 4 ? (_val.scale + _col['cashUnit']) : _col['cashUnit']
+					});
 				});
 				return _col;
 			});
@@ -576,7 +653,7 @@
 				return {
 					chartType : chartType,
 					clz : type,
-					href : self.getChartPagePath(chartType),
+					href : chartType == 'paidAmountPayLst' ? 'javascript:void 0;' : self.getChartPagePath(chartType),
 					type : type,
 					cols : _row
 				};
@@ -592,6 +669,17 @@
 				rows : rows
 			};
 		},
+		renderTableHeader : function (data) {
+			var self = this;
+			var headerTpl = self.get('headerTpl');
+			if (IX.isEmpty(headerTpl)) return;
+			var header = headerTpl({
+				header : $XP(data, 'header')
+			});
+			self.$header && self.$header.remove();
+			self.$header = $(header).insertBefore(self.container.find('.content'));
+			// console.info(self.$header.html());
+		},
 		render : function () {
 			var self = this;
 			var cntTpl = self.get('cntTpl');
@@ -599,6 +687,8 @@
 				curData : self.model.getCurrentData(self.curGroupIDLst),
 				hisData : self.model.getHistoryData(self.curGroupIDLst)
 			});
+			self.renderTableHeader(renderData);
+			
 			var htm = cntTpl(renderData);
 			self.$curCnt && self.$curCnt.remove();
 			self.$curCnt = $(htm).appendTo(self.container.find('.content'));
@@ -618,23 +708,47 @@
 			var $tblCell = $chartCanvas.parents('.table-cell'),
 				isCurDate = $tblCell.hasClass('curdate') ? true : false,
 				$legends = $chartCanvas.parent().find('.chart-legend');
-			var data = [];
+			var data = [], count = 0;
 			$legends.each(function (i, el) {
 				var bgColor = i != 0 ? '#CCC' : (isCurDate ? '#F27935' : '#1FBBA6');
 				var $el = $(el);
+				var value = parseFloat($el.attr('data-value'));
+				count += value;
 				data.push({
 					color : bgColor,
 					// label : $el.attr('data-label'),
-					value : parseInt($el.attr('data-value'))
+					value : value
 				});
 			});
-			var $canvas = $('<canvas class="chart-canvas"></canvas>');
-				$canvas.attr('width', $chartCanvas.width()).attr('height', $chartCanvas.height());
+			data = _.map(data, function (el) {
+				var _percent = parseFloat($XP(el, 'value') / count);
+				var percent = count == 0 ? 0 : (_percent == 0 ? 0.0001 : _percent);
+				return IX.inherit(el, {
+					value : percent
+				});
+			});
+			var $canvas = $('<canvas class="chart-canvas"></canvas>').css({
+				position : 'relative'
+			}).hide();
+			$canvas.attr('width', $chartCanvas.width()).attr('height', $chartCanvas.height());
 			$chartCanvas.empty().append($canvas);
 			var ctx = $canvas[0].getContext("2d");
 			var chart = new Chart(ctx).Pie(data, {
-				animation : true
+				segmentStrokeWidth : 0,
+				animation : false,
+				scaleShowLabels : false,
+				showScale : false,
+				showTooltips : false
 			});
+			var png = chart.toBase64Image();
+			$canvas.show();
+			// var $img = $('<img>').css({
+			// 	display : 'block',
+			// 	width : '100%',
+			// 	height : '100%'
+			// }).appendTo($chartCanvas);
+			// $img.attr('src', png);
+
 		}
 	});
 

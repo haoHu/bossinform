@@ -64,7 +64,7 @@
 					items : [
 						{
 							clz : 'btn-link pull-right chart-droplist',
-							label : '其他数据'
+							label : '其它指标'
 						}
 					]
 				},
@@ -317,7 +317,7 @@
 				scaleGridLinesColor : "rgba(103,112,124, 1)",
 				pointDotRadius : 5,
 				onAnimationComplete : function () {
-					console.info(arguments);
+					// console.info(arguments);
 				},
 				tooltipTitleFontStyle : 'bold',
 				multiTooltipTemplate : '<%if (datasetLabel){%><%=datasetLabel%>: <%}%><%= value %>',
@@ -351,8 +351,8 @@
 				$canvas.appendTo($chartList);
 				var ctx = $canvas[0].getContext("2d");
 				var chart = new Chart(ctx).Line({
-					// labels : labels,
-					labels : _.map(labels, function (el) { return el + '(' + pIdx + ')'}),
+					labels : labels,
+					// labels : _.map(labels, function (el) { return el + '(' + pIdx + ')'}),
 					datasets : series
 				}, {
 					responsive : true,
@@ -363,8 +363,9 @@
 					scaleShowGridLines : true,
 					scaleGridLinesColor : "rgba(103,112,124, 1)",
 					pointDotRadius : 5,
+					animation : false,
 					onAnimationComplete : function () {
-						console.info(arguments);
+						// console.info(arguments);
 					},
 					tooltipTitleFontStyle : 'bold',
 					multiTooltipTemplate : '<%if (datasetLabel){%><%=datasetLabel%>: <%}%><%= value %>',
@@ -413,7 +414,115 @@
 				preventSlide = true;
 				setTimeout(function () {preventSlide = false}, 400);
 				$chartList.css({
-					'WebkitTransition':'-webkit-transform 0.4s cubic-bezier(1.0, 0.0, 1.0, 1.0)',
+					// 'WebkitTransition':'-webkit-transform 0.4s cubic-bezier(1.0, 0.0, 1.0, 1.0)',
+					'WebkitTransform':'translate3d(' + (movePercent * 100) + '%,0,0)'
+				});
+				startPercent = movePercent;
+			};
+		},
+		drawChart : function () {
+			var self = this;
+			var $chartList = self.$curCnt.find('.chart-list');
+			var curChartData = self.curChartData;
+			var labelList = $XP(curChartData, 'labelList', []),
+				seriesList = $XP(curChartData, 'seriesList', []);
+			var viewWidth = self.$curCnt.width(),
+				viewHeight = self.$curCnt.height() * 0.8;
+			var pageCount = labelList.length;
+			
+			_.each(labelList, function (labels, pIdx) {
+				var series = seriesList[pIdx];
+				var $canvasBox = $('<div class="chart-canvas pull-left"></div>');
+				var $canvas = $('<canvas class=""></canvas>').hide();
+				var $img = $('<img/>');
+				$canvas.appendTo($canvasBox);
+				$img.appendTo($canvasBox);
+				$canvas.attr('width', viewWidth);
+				$canvas.attr('height', viewHeight);
+				$canvasBox.css({
+					'width' : viewWidth + 'px',
+					'height' : viewHeight + 'px',
+					'left' : (pIdx * 100) + '%'
+				});
+				$img.css({
+					'width' : viewWidth + 'px',
+					'height' : viewHeight + 'px',
+					'display' : 'block'
+				});
+
+				$canvasBox.appendTo($chartList);
+				var ctx = $canvas[0].getContext("2d");
+				var chart = new Chart(ctx).Line({
+					labels : labels,
+					// labels : _.map(labels, function (el) { return el + '(' + pIdx + ')'}),
+					datasets : series
+				}, {
+					responsive : true,
+					scaleOverlay : true,
+					scaleFontFamily : "'Microsoft Yahei'",
+					scaleFontSize : 12,
+					scaleFontColor : 'rgb(145,165,183)',
+					scaleShowGridLines : true,
+					scaleGridLinesColor : "rgba(103,112,124, 1)",
+					pointDotRadius : 5,
+					animation : false,
+					onAnimationComplete : function () {
+						// console.info(arguments);
+					},
+					tooltipTitleFontStyle : 'bold',
+					multiTooltipTemplate : '<%if (datasetLabel){%><%=datasetLabel%>: <%}%><%= value %>',
+					legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].lineColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
+				});
+				$canvas.data('data.chart', chart);
+				var png = chart.toBase64Image();
+				$img.attr('src', png);
+
+			});
+			$chartList.css({
+				width : pageCount * viewWidth + 'px',
+				height : viewHeight + 'px'
+			});
+
+			var startPercent = 0,
+				movePercent = 0,
+				preventSlide = false,
+				$pages = $chartList.find('.chart-canvas');
+
+			$chartList.find('.chart-canvas > img').unbind('touchy-drag').bind('touchy-drag', function (e, phase, $target, data) {
+				if (!preventSlide) {
+					var bodyWidth = self.$curCnt.width(),
+						xDelta = data.movePoint.x - data.lastMovePoint.x,
+						newMovePercent = movePercent + (xDelta / bodyWidth);
+					if (phase === 'move') {
+						// console.info('move:' + newMovePercent);
+						if (newMovePercent < 0 && newMovePercent > (1 - $pages.length)) {
+							movePercent = newMovePercent;
+							$chartList.css({
+								'WebkitTransition' : 'none',
+								'WebkitTransform' : 'translate3d(' + (movePercent * 100) + '%, 0, 0'
+							});
+						}
+					} else if (phase === 'end' && movePercent !== startPercent) {
+						// console.info('end:' + movePercent + '!==' + startPercent);
+						if (data.velocity > 1.7) {
+							movePercent = movePercent > startPercent ? startPercent + 1 : startPercent - 1
+							// console.info('end movePercent:' + movePercent);
+							slide();
+						} else {
+							movePercent = Math.round(movePercent);
+							slide();
+						}
+					}
+					// console.info('xDelta is :' + xDelta);
+				}
+			});
+			
+
+			var slide = function () {
+				preventSlide = true;
+				setTimeout(function () {preventSlide = false}, 400);
+				$chartList.css({
+					// 'WebkitTransition':'-webkit-transform 0.4s cubic-bezier(1.0, 0.0, 1.0, 1.0)',
 					'WebkitTransform':'translate3d(' + (movePercent * 100) + '%,0,0)'
 				});
 				startPercent = movePercent;

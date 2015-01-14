@@ -46,15 +46,26 @@
 			this.on({
 				load : function (params) {
 					var self = this;
+					var $body = $('body');
 					self.init(params);
-					setTimeout(function () {
-						self.model.load(function (res) {
-							self.view.emit('render');
-						}, function (res) {
-							// TODO fail handle
+					$body.mask && $body.mask('show');
+					self.model.load(function (res) {
+						self.view.emit('render');
+						$body.mask && $body.mask('hide', function () {
+							Hualala.UI.TopTip({
+								msg : '加载成功',
+								type : 'success'
+							});
 						});
-					}, 500);
-					
+					}, function (res) {
+						// TODO fail handle
+						$body.mask && $body.mask('hide', function () {
+							Hualala.UI.TopTip({
+								msg : $XP(res, 'resultmsg', '加载失败'),
+								type : 'danger'
+							});
+						});
+					});
 				}
 			}, this);
 			
@@ -68,13 +79,26 @@
 				switchCycle : function () {
 					var self = this;
 					var params = self.model.getQueryParams();
+					var $body = $('body');
+					$body.mask && $body.mask('show');
 					self.model.updateQueryParams(IX.inherit(params, {
 						cycleType : self.view.curCycleType
 					}));
 					self.model.load(function (res) {
 						self.view.emit('render');
+						$body.mask && $body.mask('hide', function () {
+							Hualala.UI.TopTip({
+								msg : '加载成功',
+								type : 'success'
+							});
+						});
 					}, function (res) {
-
+						$body.mask && $body.mask('hide', function () {
+							Hualala.UI.TopTip({
+								msg : $XP(res, 'resultmsg', '加载失败'),
+								type : 'danger'
+							});
+						});
 					});
 				}
 			}, this);

@@ -73,7 +73,7 @@
 					value : value,
 					active : active,
 					logo : logo,
-					label : $XP(el, 'groupLoginName', '')
+					label : $XP(el, 'groupName', '')
 				};
 			});
 			return {
@@ -264,4 +264,6 @@
 		});
 	};
 	Hualala.UI.ChartDropList = ChartDropList;
+
+	
 })(jQuery, window);

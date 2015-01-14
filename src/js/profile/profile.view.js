@@ -89,7 +89,7 @@
 			var self = this;
 			var profile = self.model.getProfileInfo();
 			var items = [];
-			if (self.profileType == 'multi') {
+			if (self.profileType == 'single') {
 				_.each(SingleBrandProfileKeys, function (k) {
 					var v = $XP(profile, k, ''),
 						dispVal = '', label = '';

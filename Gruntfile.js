@@ -237,6 +237,19 @@ module.exports = function (grunt) {
 					}
 				]
 			},
+			devJS : {
+				files : [
+					{
+						expand : true,
+						dot : true,
+						cwd : '.tmp/concat',
+						src : [
+							'js/{,*/}*.js',
+						],
+						dest : '<%= config.dist %>'
+					}
+				]
+			},
 			css : {
 				expand : true,
 				dot : true,
@@ -529,6 +542,8 @@ module.exports = function (grunt) {
 			'uglify',
 			// 拷贝资源文件
 			'copy:dist',
+			// for debug front end code in mu
+			// 'copy:devJS',
 			// 'requirejs',
 			// 为引用文件增加md5时间戳
 			'rev',

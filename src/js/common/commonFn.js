@@ -635,6 +635,37 @@
 		}
 		return Number(s.toString().movePoint(-scale));
 	};
+
+	var shortyNumeric = function (num) {
+		num = num + '';
+		var _num = num.split('.')[0],
+			_c = _num.length,
+			_scale = 0,
+			_scaleStr = '';
+		if (_c > 4) {
+			num = Number(num.movePoint(-4)).toFixed(2);
+			_scaleStr = '万';
+		}
+		return num + _scaleStr;
+	};
+
+	var mapNumeric = function (num) {
+		num = num + '';
+		var _num = num.split('.')[0],
+			_c = _num.length,
+			_scale = 0,
+			_scaleStr = '';
+		if (_c > 4) {
+			_num = Number(num.movePoint(-4)).toFixed(2);
+			_scaleStr = '万';
+		}
+		return {
+			shorty : _num,
+			scale : _scaleStr,
+			orig : num
+		};
+	};
+
 	IX.ns("Hualala.Common");
 	Hualala.Common.Math = {
 		prettyNumeric : prettyNumeric,
@@ -645,7 +676,9 @@
 		sub : sub,
 		multi : multi,
 		div : div,
-		numberToFixed : numberToFixed
+		numberToFixed : numberToFixed,
+		shortyNumeric : shortyNumeric,
+		mapNumeric : mapNumeric
 	};
 })(jQuery);
 

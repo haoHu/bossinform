@@ -19,6 +19,18 @@
 	].join('');
 	TemplateList.register("tpl_site_toptip", tpl_site_toptip);
 
+	// Site Loading Mask template
+	var tpl_site_loadingmask = [
+		'<div id="site_mask_{{id}}" class="site-mask {{clz}}">',
+			'<div class="mask-box">',
+				'<div class="animate-loading">',
+				'</div>',
+				'<p class="mask-msg">{{{msg}}}</p>',
+			'</div>',
+		'</div>'
+	].join('');
+	TemplateList.register("tpl_site_loadingmask", tpl_site_loadingmask);
+
 	// APP顶部栏位模板
 	var tpl_app_bar = [
 		'<header class="bar bar-nav bi-bar {{clz}}">',
@@ -70,7 +82,7 @@
 		'<div class="content">',
 			'<div class="segmented-control bi-login-tab">',
 				'{{#each segHeads}}',
-					'<a class="control-item {{active}} {{clz}}" data-href="segmented" href="#{{id}}">',
+					'<a class="control-item {{active}} {{clz}}" data-href="segmented" data-tag="#{{id}}" href="#{{id}}">',
 						'{{{label}}}',
 					'</a>',
 				'{{/each}}',
@@ -81,7 +93,7 @@
 						'<form class="input-group">',
 							'{{#each items}}',
 								'<div class="{{clz}}">',
-									'<label>{{label}}</label>',
+									'<label for="{{id}}">{{label}}</label>',
 									'<input type="{{type}}" placeholder="{{placeholder}}" name="{{name}}" data-key="{{key}}" id="{{id}}" />',
 								'</div>',
 							'{{/each}}',
@@ -122,7 +134,7 @@
 		'<ul class="table-view brand-list {{clz}}">',
 			'{{#each items}}',
 				'<li class="table-view-cell brand-item {{clz}}">',
-					'<a class="navigate-right" href="{{href}}" data-transition="slide-in" data-href="push" data-item-id="{{groupID}}">',
+					'<a class="navigate-right" href="{{href}}" data-transition="fade" data-href="push" data-item-id="{{groupID}}">',
 						'<div class="row">',
 							'<div class="col-xs-3">',
 								'<img src="{{logo}}" alt="{{groupName}}" class="brand-logo" />',
@@ -220,12 +232,11 @@
 	].join('');
 	TemplateList.register("tpl_brand_chart", tpl_brand_chart);
 
-	// 统计数据报表
-	var tpl_statistic_table = [
-		'<div class="bi-table">',
-			'<div class="table-header">',
-				'{{#each header}}',
-					'<div class="table-cell {{clz}}">',
+	var tpl_statistic_header = [
+		'<div class="table-header">',
+			'{{#each header}}',
+				'<div class="table-cell {{clz}}">',
+					'<div class="flex">',
 						'{{#if isHistory}}',
 							'{{#with iconBtn}}',
 								'{{#each items}}',
@@ -237,11 +248,36 @@
 							'{{{dateStr}}}',
 						'</span>',
 					'</div>',
-				'{{/each}}',
-			'</div>',
+				'</div>',
+			'{{/each}}',
+		'</div>',
+	].join('');
+	TemplateList.register("tpl_statistic_header", tpl_statistic_header);
+
+	// 统计数据报表
+	var tpl_statistic_table = [
+		'<div class="bi-table">',
+			// '<div class="table-header">',
+			// 	'{{#each header}}',
+			// 		'<div class="table-cell {{clz}}">',
+			// 			'<div class="flex">',
+			// 				'{{#if isHistory}}',
+			// 					'{{#with iconBtn}}',
+			// 						'{{#each items}}',
+			// 							'{{> iconBtn}}',
+			// 						'{{/each}}',
+			// 					'{{/with}}',
+			// 				'{{/if}}',
+			// 				'<span class="date">',
+			// 					'{{{dateStr}}}',
+			// 				'</span>',
+			// 			'</div>',
+			// 		'</div>',
+			// 	'{{/each}}',
+			// '</div>',
 			'<div class="table-body">',
 				'{{#each rows}}',
-					'<a class="table-row {{clz}}"  data-charttype="{{chartType}}" href="{{href}}" data-transition="slide-in" data-href="push">',
+					'<a class="table-row {{clz}}"  data-charttype="{{chartType}}" href="{{href}}" data-transition="fade" data-href="push">',
 						'{{#chkRowType type type="common"}}',
 							'{{#each cols}}',
 								'<div class="table-cell {{clz}} {{hidden}}">',
@@ -280,7 +316,7 @@
 			'<div class="table-row uncheckout {{clz}}">',
 				'<span class="table-cell label">{{unCheckoutLabel}}</span>',
 				'<span class="table-cell num">{{{waitCheckoutOrderAmountTotal}}}</span>',
-				'<span class="table-cell unit">{{{unit}}}</span>',
+				'<span class="table-cell unit">{{{waitCheckoutOrderUnit}}}</span>',
 			'</div>',
 		'{{/if}}'
 	].join('');
@@ -288,7 +324,7 @@
 
 	var tpl_tblcell_chart = [	
 		'<div class="">',
-			'<h5 class="">{{label}}</h5>',
+			'<h5 class="label">{{label}}</h5>',
 			'<div class="chart-canvas">',
 			'</div>',
 			'{{#each items}}',
@@ -317,11 +353,11 @@
 					'<span class="percent">',
 						'{{{payPercent}}}',
 					'</span>',
-					'<span class="num">',
-						'{{{payAmount}}}',
+					'<span class="num" data-value="{{payAmount}}">',
+						'{{{value}}}',
 					'</span>',
-					'<span class="unit">',
-						'{{{../cashUnit}}}',
+					'<span class="unit" data-unit="{{../cashUnit}}">',
+						'{{{unit}}}',
 					'</span>',
 				'</li>',
 			'{{/each}}',

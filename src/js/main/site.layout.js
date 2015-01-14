@@ -9,14 +9,22 @@
 
 	// 页面整体DOM框架加载
 	HC.initPageLayout = function () {
+		IX.Debug.info("DEBUG: Init Page Layout");
 		var session = Hualala.getSessionData(),
 			layoutTpl = Handlebars.compile(Hualala.TplLib.get('tpl_site_layout'));
 		var $wrapper = $(layoutTpl());
-		$('body > #ix_wrapper').remove();
+		$('body > #ix_wrapper, body > .bi-toolbar, body > .table-header').remove();
 		$wrapper.appendTo('body');
+		var $body = $('body');
+		if (!$body.data('mask')) {
+			$body.mask({
+				message : "努力加载中..."
+			});
+		}
 	};
 
 	HC.LoginInit = function (pageName, pageParams) {
+		IX.Debug.info("DEBUG: Login Page");
 		Hualala.Common.initPageLayout({}, pageName);
 		var $wrapper = $('body > #ix_wrapper');
 		var panel = new Hualala.Entry.LoginInit({
@@ -27,7 +35,7 @@
 
 	// 多品牌列表首页
 	HC.SchemaPageInit = function (pageName, pageParams) {
-		console.info("Schema Page ");
+		IX.Debug.info("DEBUG: Schema Page ");
 		HC.initPageLayout({}, pageName);
 		var $wrapper = $('body > #ix_wrapper');
 		var panel = new Hualala.Brand.BrandListController({
@@ -41,6 +49,7 @@
 
 	// 单品牌统计页面
 	HC.BrandPageInit = function (pageName, pageParams) {
+		IX.Debug.info("DEBUG: Brand Page");
 		HC.initPageLayout({}, pageName);
 		var $wrapper = $('body > #ix_wrapper');
 		var panel = new Hualala.Brand.BrandDetailController({
@@ -54,6 +63,7 @@
 
 	// 品牌业务统计图
 	HC.BrandChartPageInit = function (pageName, pageParams) {
+		IX.Debug.info("DEBUG: Brand Chart Page");
 		HC.initPageLayout({}, pageName);
 		var $wrapper = $('body > #ix_wrapper');
 		var panel = new Hualala.Brand.BrandChartController({
@@ -67,6 +77,7 @@
 
 	// 个人信息页面
 	HC.AboutMePageInit = function (pageName, pageParams) {
+		IX.Debug.info("DEBUG: About Me Page");
 		HC.initPageLayout({}, pageName);
 		var $wrapper = $('body > #ix_wrapper');
 		var panel = new Hualala.Profile.ProfileController({

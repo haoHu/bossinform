@@ -28,7 +28,7 @@
 				.attr('novalidate', 'novalidate')
 				.addClass(this.options.elementClass)
 				.on('submit.sv', function () {
-					console.info('submit');
+					// console.info('submit');
 					e.preventDefault();
                     that.validate();
 				})
@@ -36,7 +36,7 @@
 					that.$submitButton  = $(this);
 					// The user just click the submit button
 					that._submitIfValid = true;
-					console.info("click submit");
+					// console.info("click submit");
                 })
 				// Find all fields which have name
 				.find('[name]')
@@ -230,7 +230,10 @@
 			var isValid = this.isValid(),
 				eventType = isValid ? 'success.form.sv' : 'error.form.sv',
 				e = $.Event(eventType);
-
+			// Hualala.UI.TopTip({
+			// 	type : 'danger',
+			// 	msg : 'eventType:' + eventType
+			// });
 			this.$form.trigger(e, isValid ? {
 					sv : this
 				} : this._invalidField);
@@ -266,7 +269,7 @@
 			return true;
 		},
 		isValidField : function (field) {
-			var $field = $('[name="' + field + '"');
+			var $field = $('[name="' + field + '"]');
 			var type = $field.attr('type'),
 				total = ('radio' === type || 'checkbox' === type) ? 1 : $field.length,
 				validatorName, status, fieldEl;

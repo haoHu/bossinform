@@ -7,7 +7,7 @@
 	var formFields = [
 		{
 			name : "group_name", type : "text", placeholder : "", clz : "form-control input-row",
-			key : "groupName", label : "集团主账号",
+			key : "groupName", label : "主账号",
 			field : {
 				validators : {
 					notEmpty : {
@@ -18,7 +18,7 @@
 		},
 		{
 			name : "group_subname", type : "text", placeholder : "", clz : "form-control input-row",
-			key : "childName", label : "集团子账号",
+			key : "childName", label : "子账号",
 			field : {
 				validators : {
 					notEmpty : {
@@ -286,6 +286,7 @@
 			var self = this;
 			var tpl = hbr.compile(TplLib.get('tpl_site_login'));
 			var renderData = self.mapRenderData();
+			var $body = $('body');
 			hbr.registerPartial("appBar", TplLib.get('tpl_app_bar'));
 			hbr.registerPartial("iconBtn", TplLib.get('tpl_icon_btn'));
 			hbr.registerPartial("commonBtn", TplLib.get('tpl_common_btn'));
@@ -293,6 +294,7 @@
 			self.$container.html(tpl(renderData));
 			self.initAuthCode();
 			self.initDynamicPWD();
+			$body.mask && $body.mask('hide');
 		},
 		initAuthCode : function () {
 			var self = this,
@@ -334,7 +336,7 @@
 			var self = this;
 			
 			self.$container.on('click', '.bi-login-tab .control-item', function (e) {
-				self.mode = $(e.target).attr('href').slice(1);
+				self.mode = $(e.target).attr('data-tag').slice(1);
 				self.callServer = self.mode == 'login' ? HG.loginCallServer : HG.dynamicLoginCallServer;
 			});
 			self.$container.on('click', '.subBtn', function (e) {
@@ -342,6 +344,20 @@
 				e.preventDefault();
 				var bv = $('#' + self.mode).find('form').data('smileyValidator');
 				bv.validate();
+
+				// for test
+				// var params = self.getFormData();
+				// self.callServer(params, function (res) {
+				// 	if ($XP(res, 'resultcode') == "000") {
+				// 		Hualala.PageRoute.jumpPage(Hualala.PageRoute.createPath("main", [""]));
+				// 	} else {
+				// 		HU.TopTip({
+				// 			type : 'danger',
+				// 			msg : $XP(res, 'resultmsg', '') || "登录失败"
+				// 		});
+				// 	}
+				// });
+				
 			});
 			_.each(SegmentedCfg, function (el) {
 				var id = $XP(el, 'id');
@@ -363,13 +379,18 @@
 					});
 				}).on('success.form.sv', function (e, data) {
 					var params = self.getFormData();
+					var $body = $('body');
+					$body.mask && $body.mask('show');
 					self.callServer(params, function (res) {
 						if ($XP(res, 'resultcode') == "000") {
+							$body.mask && $body.mask('hide');
 							Hualala.PageRoute.jumpPage(Hualala.PageRoute.createPath("main", [""]));
 						} else {
-							HU.TopTip({
-								type : 'danger',
-								msg : $XP(res, 'resultmsg', '') || "登录失败"
+							$body.mask && $body.mask('hide', function () {
+								HU.TopTip({
+									type : 'danger',
+									msg : $XP(res, 'resultmsg', '') || "登录失败"
+								});
 							});
 						}
 					});

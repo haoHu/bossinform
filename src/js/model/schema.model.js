@@ -33,7 +33,9 @@
 				ds_curBiz : new IX.IListManager(),
 				ds_hisBiz : new IX.IListManager()
 			});
-			this.updateQueryParams(params);
+			this.updateQueryParams(IX.inherit(params, {
+				pageSize : $XP(params, 'pageSize', HT.MaxBrandHistoryCount)
+			}));
 			// this.set({
 			// 	groupIDLst : $XP(params, 'groupIDLst', getAllGroupIDs()),
 			// 	shopIDLst : $XP(params, 'shopIDLst', ''),
@@ -85,6 +87,18 @@
 					failFn.call(self, res);
 				}
 			});
+			// params = IX.inherit(params, {
+			// 	shopIDLst : '77878'
+			// });
+			// self.callServer(params, function (res) {
+			// 	if ($XP(res, 'resultcode') == "000") {
+			// 		self.updateDataStore($XP(res, 'data', null));
+			// 		successFn.call(self, res);
+			// 	} else {
+			// 		self.clear();
+			// 		failFn.call(self, res);
+			// 	}
+			// });
 		},
 		clear : function () {
 			this.get('ds_curBiz').clear();
@@ -224,10 +238,26 @@
 				self.shopSet[groupID] = new IX.IListManager();
 			});
 		},
+		initDataSet : function (groupID) {
+			var self = this;
+			var groups = Hualala.getSessionData();
+			var group = _.find(groups, function (grp) {
+				return $XP(grp, 'groupID') == groupID;
+			});
+			if (!group) {
+				throw "There has no group set";
+			}
+			self.groupHT.register(groupID, group);
+			self.citySet[groupID] = new IX.IListManager();
+			self.shopSet[groupID] = new IX.IListManager();
+		},
 		load : function (params, cbFn) {
 			var self = this;
 			var groupID = $XP(params, 'groupID', null);
 			if (!groupID) return;
+			if (!self.citySet[groupID]) {
+				self.initDataSet(groupID);
+			}
 			self.callServer(params, function (res) {
 				if (res.resultcode == '000') {
 					// TODO run cbFn
@@ -261,12 +291,13 @@
 		getCitySet : function (groupID, cbFn) {
 			var self = this;
 			var _cityHT = self.citySet[groupID];
-			if (!_cityHT.isEmpty()) {
+			if (_cityHT && !_cityHT.isEmpty()) {
 				cbFn.apply(self, [_cityHT.getAll()]);
 			} else {
 				self.load({
 					groupID : groupID
 				}, function () {
+					_cityHT = self.citySet[groupID];
 					cbFn.apply(self, [_cityHT.getAll()]);
 				});
 			}
@@ -274,12 +305,13 @@
 		getShopSet : function (groupID, cbFn) {
 			var self = this;
 			var _shopHT = self.shopSet[groupID];
-			if (!_shopHT.isEmpty()) {
+			if (_shopHT && !_shopHT.isEmpty()) {
 				cbFn.apply(self, [_shopHT.getAll()]);
 			} else {
 				self.load({
 					groupID : groupID
 				}, function () {
+					_shopHT = self.shopSet[groupID];
 					cbFn.apply(self, [_shopHT.getAll()]);
 				});
 			}
@@ -289,7 +321,7 @@
 			var _shopHT = self.shopSet[groupID],
 				_cityHT = self.citySet[groupID];
 			var cities = null, data = null;
-			if (!_cityHT.isEmpty()) {
+			if (_cityHT && !_cityHT.isEmpty()) {
 				cities = _cityHT.getAll();
 				data = _.map(cities, function (city) {
 					var cityID = $XP(city, 'cityID'),
@@ -303,6 +335,8 @@
 				self.load({
 					groupID : groupID
 				}, function () {
+					_shopHT = self.shopSet[groupID];
+					_cityHT = self.shopSet[groupID];
 					cities = _cityHT.getAll();
 					data = _.map(cities, function (city) {
 						var cityID = $XP(city, 'cityID'),

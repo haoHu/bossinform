@@ -10,6 +10,10 @@
 			return ($XP(grp, 'groupLoginName') === groupLoginName) && $XP(grp, 'loginName') === loginName;
 		});
 	};
+	// 根据groupID获取集团数据
+	Hualala.getGroupByGroupID = function (groupID) {
+		return _.find(sessionData, function (el) {return $XP(el, 'groupID') == groupID;});
+	};
 
 	function loadSession(appData, cbFn) {
 		sessionData = appData;
@@ -19,15 +23,15 @@
 	function initMainPage(cbFn) {
 		var tick = IX.getTimeInMS();
 		var HPR = Hualala.PageRoute;
-		log("BI Sys Init : " + tick);
+		IX.Debug.info("DEBUG: BI Sys Init : " + tick);
 		Hualala.Global.loadAppData({}, function (appData) {
-			log("Load BI APP Data in (ms): " + (IX.getTimeInMS() - tick));
+			IX.Debug.info("DEBUG: Load BI APP Data in (ms): " + (IX.getTimeInMS() - tick));
 			if ($XP(appData, 'resultcode') != 0) {
 				HPR.jumpPage(HPR.createPath('login'));
-				log("Session Data Load Faild!! resultcode = " + $XP(appData, "resultcode", "") + "; resultMsg = " + $XP(appData, 'resultmsg', ''));
+				IX.Debug.info("DEBUG: Session Data Load Faild!! resultcode = " + $XP(appData, "resultcode", "") + "; resultMsg = " + $XP(appData, 'resultmsg', ''));
 			}
 			loadSession($XP(appData, 'data.records', []), function () {
-				log("Merchant Sys INIT DONE in (ms): " + (IX.getTimeInMS() - tick));
+				IX.Debug.info("DEBUG: Merchant Sys INIT DONE in (ms): " + (IX.getTimeInMS() - tick));
 				cbFn();
 			});
 		}, function () {
@@ -73,6 +77,6 @@
 	};
 
 	window.addEventListener('push', function () {
-		console.info("run push event callback");
+		IX.Debug.info("run push event callback");
 	});
 })(jQuery, window);

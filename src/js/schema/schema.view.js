@@ -107,7 +107,19 @@
 			var items = _.map(data, function (d) {
 				var _m = $XP(d, '_model');
 				var schemaData = _m.getSchemaData();
-				var groupLogoImageUrl = $XP(schemaData, 'groupLogoImageUrl', '');
+				var group = Hualala.getGroupByGroupID($XP(schemaData, 'groupID'));
+				var groupLogoImageUrl = $XP(group, 'groupLogoImageUrl', '');
+				var personTotal = Hualala.Common.Math.mapNumeric($XP(schemaData, 'personTotal', 0)),
+					personUnit = $XP(schemaData, 'personUnit'),
+					l1 = personTotal.orig.split('.')[0].length,
+					orderCountTotal = Hualala.Common.Math.mapNumeric($XP(schemaData, 'orderCountTotal', 0)),
+					orderUnit = $XP(schemaData, 'orderUnit'),
+					l2 = orderCountTotal.orig.split('.')[0].length,
+					orderAomoutTotal = Hualala.Common.Math.mapNumeric($XP(schemaData, 'orderAomoutTotal', 0)),
+					cashUnit = $XP(schemaData, 'cashUnit'),
+					l3 = orderAomoutTotal.orig.split('.')[0].length;
+
+
 				return IX.inherit(schemaData, {
 					clz : '',
 					href : HP.createPath('brand', [self.curCycleType, $XP(schemaData, 'groupID'), '', '']),
@@ -117,7 +129,13 @@
 							width : 40,
 							height : 40,
 							quality : 50
-						})
+						}),
+					personTotal : l1 > 4 ? personTotal.shorty : personTotal.orig,
+					personUnit : l1 > 4 ? (personTotal.scale + personUnit) : personUnit,
+					orderCountTotal : l2 > 4 ? orderCountTotal.shorty : orderCountTotal.orig,
+					orderUnit : l2 > 4 ? (orderCountTotal.scale + orderUnit) : orderUnit,
+					orderAomoutTotal : l3 > 4 ? orderAomoutTotal.shorty : orderAomoutTotal.orig,
+					cashUnit : l3 > 4 ? (orderAomoutTotal.scale + cashUnit) : cashUnit
 				});
 			});
 			return {

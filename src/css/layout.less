@@ -1,9 +1,15 @@
-
+#ix_wrapper {
+	position: absolute; left : 0; right : 0; top : 0; bottom : 0;
+	&.statistic-view {
+		padding-top : 44px;
+	}
+}
 .bi-bar {
 	background-color : @bi-bar-bg;
-	.btn-link, .icon-left-nav, .title {
+	.btn-link, .icon-left-nav, .icon-person, .title {
 		color : @bi-color;
 	}
+	// .icon-person {color : #81909E;}
 	.dropdown-menu {
 		width : 100%; max-height : 380px; margin : 0; padding : 0; border : 1px none; .x-border-radius(0);
 	}
@@ -118,11 +124,89 @@
 	}
 }
 
+
+/*
+	表头
+ */
+.table-header {
+	position : relative;
+	display : table;
+	table-layout: fixed;
+	width : 100%;
+	overflow : hidden;
+	font-weight: 400;
+	background-color: #fff;
+	border : 0 none;
+	z-index: 1;
+
+	.table-cell {
+		display: table-cell;
+		width : 1%;
+		overflow : hidden;
+		text-align: center;
+		line-height: 3;
+		font-size : 12px;
+	}
+
+	.table-cell.hisdate, .table-cell.curdate {
+		color : #fff; width : 50%;
+		.flex {
+			display : -webkit-flex; display: flex; 
+			-webkit-flex-direction : row; flex-direction : row; 
+			-webkit-justify-content : space-between; justify-content : space-between;
+			-webkit-align-items : center; align-items : center;
+			vertical-align: middle; height: 4em;
+		}
+		.icon {
+			display: block;
+			width : 4em; 
+			height : 4em;
+			font-size : 12px;
+			line-height: 4;
+			vertical-align: middle;
+			color : #fff;
+		}
+		.icon-left {
+			border-right : 1px solid lighten(@brand-success, 30%); 
+			-webkit-order : 1; order : 1;
+			-webkit-flex : none; flex : none;
+		}
+		.icon-right {
+			border-left : 1px solid lighten(@brand-success, 30%);
+			-webkit-order : 3; order : 3;
+			-webkit-flex : none; flex : none;
+		}
+		.date {
+			display : block; font-size: 12px; line-height: 1.5em;  vertical-align: middle;
+			-webkit-order : 2; order : 2;
+			-webkit-flex : 1; flex : 1;	
+			text-indent : .5em;
+		}
+	}
+
+	> .table-cell.curdate {
+		background-color : @brand-warning; vertical-align: middle;
+		-webkit-justify-content : center; justify-content : center;
+		.date {
+			width : 100%;
+		}
+	}
+	> .table-cell.hisdate {
+		background-color : @brand-success; vertical-align: middel;
+		
+		
+	}
+}
+
 /*
 	数据统计报表
  */
+.content > .bi-table {
+	// for fix android below 4.4 webkit bug
+	padding-top : 96px;
+}
 .bi-table {
-	.table-row {
+	.table-row, .table-header {
 		position : relative;
 		display : table;
 		table-layout: fixed;
@@ -141,9 +225,7 @@
 		line-height: 3;
 		font-size : 12px;
 	}
-	.table-header {
-
-	}
+	
 	.table-body {
 		.table-row {
 			border-bottom : 1px solid @gray-lighter;
@@ -156,25 +238,55 @@
 }
 
 .bi-table {
-	.table-header > .table-cell.curdate {
-		background-color : @brand-warning;
-		color : #fff;
-	}
-	.table-header > .table-cell.hisdate {
-		background-color : @brand-success;
-		color : #fff;
-		.icon {
-			display: block;
-			width : 3em; 
-			height : 3em;
-			font-size : 12px;
-			line-height: 3;
-			vertical-align: middle;
-			color : #fff;
-		}
-		.icon-left {border-right : 1px solid lighten(@brand-success, 30%);}
-		.icon-right {border-left : 1px solid lighten(@brand-success, 30%);}
-	}
+	// .table-cell.hisdate, .table-cell.curdate {
+	// 	color : #fff; width : 50%;
+	// 	.flex {
+	// 		display : -webkit-flex; display: flex; 
+	// 		-webkit-flex-direction : row; flex-direction : row; 
+	// 		-webkit-justify-content : space-between; justify-content : space-between;
+	// 		-webkit-align-items : center; align-items : center;
+	// 		vertical-align: middle; height: 4em;
+	// 	}
+	// 	.icon {
+	// 		display: block;
+	// 		width : 4em; 
+	// 		height : 4em;
+	// 		font-size : 12px;
+	// 		line-height: 4;
+	// 		vertical-align: middle;
+	// 		color : #fff;
+	// 	}
+	// 	.icon-left {
+	// 		border-right : 1px solid lighten(@brand-success, 30%); 
+	// 		-webkit-order : 1; order : 1;
+	// 		-webkit-flex : none; flex : none;
+	// 	}
+	// 	.icon-right {
+	// 		border-left : 1px solid lighten(@brand-success, 30%);
+	// 		-webkit-order : 3; order : 3;
+	// 		-webkit-flex : none; flex : none;
+	// 	}
+	// 	.date {
+	// 		display : block; font-size: 12px; line-height: 1.5em;  vertical-align: middle;
+	// 		-webkit-order : 2; order : 2;
+	// 		-webkit-flex : 1; flex : 1;	
+	// 		text-indent : .5em;
+	// 	}
+	// }
+
+	// .table-header > .table-cell.curdate {
+	// 	background-color : @brand-warning; vertical-align: middle;
+	// 	-webkit-justify-content : center; justify-content : center;
+	// 	.date {
+	// 		width : 100%;
+	// 	}
+	// }
+	// .table-header > .table-cell.hisdate {
+	// 	background-color : @brand-success; vertical-align: middel;
+		
+		
+	// }
+
 	.table-body {
 		.table-cell {
 			.label, .unit {color : @gray-light; font-size: 1em;}
@@ -207,7 +319,7 @@
 			}
 		}
 		.hisdate {
-			.label {.invisible;}
+			h5.label {.invisible;}
 		}
 		.common  {
 			.uncheckout.hisdate {.invisible;}
@@ -252,15 +364,15 @@
 			ul {
 				margin : 0; padding : 0;
 				> li {
-					list-style: none; width : 100%; display: table;
+					list-style: none; width : 100%; display: table; margin-bottom : .5em;
 				}
 			}
 			.label, .percent, .num, .unit {
 				display: table-cell; overflow: hidden;  text-overflow : ellipsis; white-space :nowrap; text-align: right;
-				line-height: 2em;
+				line-height: 2em; vertical-align: middle;
 			}
 			.label {
-				width : 30%;
+				width : 3em; text-overflow : initial; overflow : auto; white-space: normal; line-height: 1.5em;
 			}
 			.percent {
 				width : 30%;
@@ -269,7 +381,7 @@
 				width : 30%;
 			}
 			.unit {
-				width : 10%; text-align: left;
+				width : 2em; text-align: left;
 			}
 			.curdate, .hisdate {padding-bottom : 1.5em;}
 		}
@@ -281,13 +393,15 @@
 	页面工具栏
  */
 .bi-toolbar {
-	position : fixed;
+	// position : fixed;
+	// for fix android below 4.4 webkit bug
+	position : relative;
 	top : 0px;
 	left : 0px;
 	margin-top : 0px;
 	z-index: 5;
 	.bi-filter {
-		margin-top : 44px;
+		// margin-top : 44px;
 	}
 	& + .bi-table {
 		margin-top : 48px;
@@ -331,15 +445,15 @@
 		display: block; height : 100%; overflow : auto; 
 	}
 	.menu-city {
-		width : 120px; background-color: #fff;
+		position : absolute; left : 0; top : 0; width : 120px; background-color: #fff;
 		.num {display: inline-block; float : right; padding-right : 5px; }
 		.city-item.active {
 			background-color: @gray-lighter;
 		}
 	}
 	.menu-shop {
-		margin-left : 120px; border-left : 1px solid @gray-lighter; background-color: transparent;
-		> ul {display: none;}
+		margin-left : 120px; width : 100%; border-left : 1px solid @gray-lighter; background-color: transparent;
+		> ul {display: none; width : 100%;}
 		> ul.active {display:block;}
 	}
 	
@@ -366,3 +480,73 @@
 		vertical-align: middle; line-height: 2em;
 	}
 }
+
+/*Mask loading*/
+@-webkit-keyframes 'rotate' {
+	from{
+		-webkit-transform: rotate(0deg);
+	}
+	10% {
+		-webkit-transform: rotate(36deg);
+	}
+	20% {
+		-webkit-transform: rotate(72deg);
+	}
+	30% {
+		-webkit-transform: rotate(108deg);
+	}
+	40% {
+		-webkit-transform: rotate(144deg);
+	}
+	50% {
+		-webkit-transform: rotate(180deg);
+	}
+	60% {
+		-webkit-transform: rotate(216deg);
+	}
+	70% {
+		-webkit-transform: rotate(252deg);
+	}
+	80% {
+		-webkit-transform: rotate(288deg);
+	}
+	90% {
+		-webkit-transform: rotate(324deg);
+	}
+	to {
+		-webkit-transform: rotate(360deg);
+	}
+}
+
+.site-mask {
+	position : absolute; z-index : 20; background : transparent;
+	top : 0; bottom : 0; left : 0; right : 0;
+	&.mask-dark {
+		background : rgba(0, 0, 0, .3);
+	}
+	.mask-box {
+		position : absolute; top : 50%; left : 50%; width : 300px; height : 200px; margin-top : -100px; margin-left : -150px;
+		background : rgba(255,255,255, .9); text-align: center; padding : 1em 0;
+		.x-border-radius(10px);
+	}
+
+	.animate-loading {
+		position : relative; margin : 0 auto 1.5em; width : 100px; height : 100px;
+		.x-border-radius(50%); background-color: transparent;
+		border : 20px solid rgba(0, 0, 0, .3); border-right-color : @brand-warning;
+		&.active {
+			-webkit-animation-name:'rotate';
+			animation-name : 'rotate';
+			-webkit-animation-duration:2s;
+			animation-duration : 2s;
+			-webkit-animation-iteration-count:infinite;
+			animation-iteration-count : infinite;
+		}
+	}
+	.mask-msg {
+		position : relative; display: block; margin : 2em auto; text-align: center; font-size : 1em; line-height: 1.5em; color : @gray; vertical-align: middle; 
+	}
+}
+
+
+
