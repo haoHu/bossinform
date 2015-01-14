@@ -391,6 +391,9 @@
 									type : 'danger',
 									msg : $XP(res, 'resultmsg', '') || "登录失败"
 								});
+								if (self.mode == 'login') {
+									self.authCode.genCode();
+								}
 							});
 						}
 					});

@@ -483,6 +483,7 @@
 	var prettyNumeric = function (num, separator) {
 		if (isNaN(num)) return num.toString();
 		var s = num.toString().split('.'),
+			isNegative = num < 0 ? true : false,
 			s1 = s[0],
 			s2 = s[1] || '',
 			l = s1.length,
@@ -495,7 +496,7 @@
 			for (var i = 0; i < l1; i++) {
 				r += s1.slice(idx + (i * 3), (idx + (i + 1) * 3)) + separator;
 			}
-			r = r.slice(0, -1) + (s2.length > 0 ? ('.' + s2) : '');
+			r = (isNegative ? '-' : '') + r.slice(0, -1) + (s2.length > 0 ? ('.' + s2) : '');
 		} else {
 			r = num;
 		}
