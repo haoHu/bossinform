@@ -56,7 +56,8 @@ module.exports = function (grunt) {
 					]
 				}]
 			},
-			server: '.tmp'
+			server: '.tmp',
+			zip : 'dist.zip'
 		},
 
 		// Make sure code styles are up to par and there are no obvious mistakes
@@ -559,6 +560,28 @@ module.exports = function (grunt) {
 			'targethtml:' + htmlTarget,
 			// 'htmlmin'
 		]);
+		if (htmlTarget == 'mu' || htmlTarget == 'dohko' || htmlTarget == 'dist') {
+			grunt.task.run("clean:zip");
+			grunt.task.run("zip");
+		}
+	});
+
+	grunt.registerTask('zip', "Zip builded files to dist.zip", function () {
+		var done = this.async(),
+			exec = require('child_process').exec,
+			child;
+		child = exec('zip -r dist.zip ./dist', {
+			cwd : './'
+		}, function (error, stdout, stderr) {
+			if (error !== null) {
+				grunt.log.error('exec error:' + error);
+				donw(false);
+				return;
+			}
+			grunt.log.ok("The project has been ziped!");
+			grunt.log.ok(stdout);
+			done(true);
+		});
 	});
 
 
