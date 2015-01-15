@@ -2,6 +2,7 @@
 	"name": "BIAPP",
 	"version": "0.1.0",
 	"homepage": "www.dianpu.hualala.com",
+	"private" : true,
 	"author": {
 		"name": "HuHao",
 		"homepage": "https://github.com/haoHu"
@@ -35,5 +36,15 @@
 	},
 	"engines": {
 		"node": ">=0.10.0"
+	},
+	"scripts" : {
+		"watch:dev" : "grunt serve",
+		"watch:mu" : "grunt serve:mu",
+		"watch:dohko" : "grunt serve:dohko",
+		"watch:dist" : "grunt serve:dist",
+
+		"build:mu" : "grunt build:mu",
+		"build:dohko" : "grunt build:dohko",
+		"build:dist" : "grunt build:dist"
 	}
 }
