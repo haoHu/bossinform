@@ -12,7 +12,7 @@
 		// 获取短信动态密码
 		["getMobileDynamicPWD", "/getDynamicCode.ajax", "", "GET"],
 		// 获取动态验证码
-		["genAuthCode", "/getCheckCode.ajax", "", "GET"],
+		["genAuthCode", "/getCheckCode.ajax", "", "POST"],
 		// Session Data
 		["loadAppData", "/getUserInfo.ajax", "", "GET"],
 		// 获取城市店铺数据

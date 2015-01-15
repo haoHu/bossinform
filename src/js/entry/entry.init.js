@@ -126,7 +126,7 @@
 				}, 1000);
 				return ;
 			}
-			$img.attr('src', Hualala.Global.AJAX_DOMAIN + code);
+			$img.attr('src', Hualala.Global.AJAX_DOMAIN + code + '?' + (new Date()).getTime());
 
 		};
 		var init = function () {
