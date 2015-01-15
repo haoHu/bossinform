@@ -57,7 +57,7 @@ module.exports = function (grunt) {
 				}]
 			},
 			server: '.tmp',
-			zip : 'dist.zip'
+			zip : 'dist.tar.gz'
 		},
 
 		// Make sure code styles are up to par and there are no obvious mistakes
@@ -566,11 +566,11 @@ module.exports = function (grunt) {
 		}
 	});
 
-	grunt.registerTask('zip', "Zip builded files to dist.zip", function () {
+	grunt.registerTask('zip', "Zip builded files to dist.tar.gz", function () {
 		var done = this.async(),
 			exec = require('child_process').exec,
 			child;
-		child = exec('zip -r dist.zip ./dist', {
+		child = exec('tar -zcvf dist.tar.gz ./dist', {
 			cwd : './'
 		}, function (error, stdout, stderr) {
 			if (error !== null) {

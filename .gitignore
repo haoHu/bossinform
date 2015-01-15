@@ -2,5 +2,6 @@
 /.tmp/
 /dist/
 dist.zip
+dist.tar.gz
 npm-debug.log
 .DS_Store
