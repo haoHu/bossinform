@@ -2,6 +2,6 @@
 /.tmp/
 /dist/
 dist.zip
-dist.tar.gz
+*.shopbi-client.*_*.tar.gz
 npm-debug.log
 .DS_Store

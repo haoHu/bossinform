@@ -27,6 +27,7 @@ module.exports = function (grunt) {
 		dist : 'dist',
 		test : 'test',
 		pkg : grunt.file.readJSON('package.json'),
+		zipFileName : '',
 		connect : {
 			port : 9000,
 			// Change this to '0.0.0.0' to access the server from outside
@@ -57,7 +58,7 @@ module.exports = function (grunt) {
 				}]
 			},
 			server: '.tmp',
-			zip : 'dist.tar.gz'
+			zip : './*.tar.gz'
 		},
 
 		// Make sure code styles are up to par and there are no obvious mistakes
@@ -162,7 +163,7 @@ module.exports = function (grunt) {
 			dist : [
 				'less',
 				'copy:css',
-				'imagemin',
+				// 'imagemin',
 				'svgmin'
 			]
 		},
@@ -562,15 +563,49 @@ module.exports = function (grunt) {
 		]);
 		if (htmlTarget == 'mu' || htmlTarget == 'dohko' || htmlTarget == 'dist') {
 			grunt.task.run("clean:zip");
+			grunt.task.run("genSVNRevision:" + htmlTarget);
 			grunt.task.run("zip");
+			
 		}
+	});
+
+	grunt.registerTask('genSVNRevision', "Generate SVN Revision to zip file name", function (target) {
+		var done = this.async(),
+			exec = require('child_process').exec,
+			child;
+		child = exec("svn info|grep Revision |sed 's/.* //'", {
+			cwd : './'
+		}, function (error, stdout, stderr) {
+			if (error !== null) {
+				grunt.log.error('exec error:' + error);
+				donw(false);
+				return;
+			}
+			grunt.log.ok("The SVN Revision has been generated!");
+			
+			var date = new Date(),
+				y = date.getFullYear(),
+				m = date.getMonth() + 1,
+				d = date.getDate(),
+				revision = parseInt(stdout);
+			m = m > 9 ? m : ('0' + m);
+			d = d > 9 ? d : ('0' + d);
+			grunt.log.ok(stdout);
+			grunt.log.ok(revision);
+			config.zipFileName = target + '.shopbi-client.' + y + m + d + '_' + revision + '.tar.gz';
+			grunt.log.ok("The zip file name is " + config.zipFileName);
+			done(true);
+		});
 	});
 
 	grunt.registerTask('zip', "Zip builded files to dist.tar.gz", function () {
 		var done = this.async(),
 			exec = require('child_process').exec,
 			child;
-		child = exec('tar -zcvf dist.tar.gz ./dist', {
+		var fileName = config.zipFileName,
+			cmd = 'tar -zcvf ' + fileName + ' ./dist';
+		grunt.log.ok("The zip file name is " + fileName);
+		child = exec(cmd, {
 			cwd : './'
 		}, function (error, stdout, stderr) {
 			if (error !== null) {
