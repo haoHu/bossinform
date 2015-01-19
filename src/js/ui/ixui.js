@@ -94,6 +94,16 @@
 			selectFn(targetEl);
 			// return false;
 		});
+		$dropList.off('mouseover').on('mouseover', '.list-item', function (e) {
+			var $li = $(this);
+			$dropList.find('.list-item').removeClass('hover');
+			$li.addClass('hover');
+		});
+		$dropList.off('mouseout').on('mouseout', '.list-item', function (e) {
+			var $li = $(this);
+			$dropList.find('.list-item.hover').removeClass('hover');
+		});
+
 	};
 	Hualala.UI.GroupDropList = GroupDropList;
 
@@ -163,6 +173,15 @@
 				return true;
 
 			});
+			$cityMenu.off('mouseover').on('mouseover', '.city-item', function (e) {
+				var $li = $(this);
+				$cityMenu.find('.city-item').removeClass('hover');
+				$li.addClass('hover');
+			});
+			$dropList.off('mouseout').on('mouseout', '.city-item', function (e) {
+				var $li = $(this);
+				$cityMenu.find('.city-item.hover').removeClass('hover');
+			});
 			$shopMenu.off('click').on('click', '.shop-item', function (e) {
 				var $li = $(this);
 				$shopMenu.find('.shop-item').removeClass('active');
@@ -173,6 +192,15 @@
 				selectFn(targetEl);
 				// e.stopPropagation();
 				return true;
+			});
+			$shopMenu.off('mouseover').on('mouseover', '.shop-item', function (e) {
+				var $li = $(this);
+				$shopMenu.find('.shop-item').removeClass('hover');
+				$li.addClass('hover');
+			});
+			$shopMenu.off('mouseout').on('mouseout', '.shop-item', function (e) {
+				var $li = $(this);
+				$shopMenu.find('.shop-item.hover').removeClass('hover');
 			});
 		});
 	};
@@ -213,12 +241,22 @@
 		$dropList.off('click').on('click', '.list-item', function (e) {
 			var $li = $(this);
 			$dropList.find('.list-item.active').removeClass('active');
+			$dropList.find('.list-item').removeClass('hover');
 			$li.addClass('active');
 			// e.stopPropagation();
 			targetEl.attr('data-value', $li.attr('data-value'));
 			targetEl.find('.label').html($li.find('.label').html());
 			selectFn(targetEl);
 			// return false;
+		});
+		$dropList.off('mouseover').on('mouseover', '.list-item', function (e) {
+			var $li = $(this);
+			$dropList.find('.list-item').removeClass('hover');
+			$li.addClass('hover');
+		});
+		$dropList.off('mouseout').on('mouseout', '.list-item', function (e) {
+			var $li = $(this);
+			$dropList.find('.list-item.hover').removeClass('hover');
 		});
 	};
 	Hualala.UI.CycleDropList = CycleDropList;
@@ -259,8 +297,19 @@
 			// e.stopPropagation();
 			targetEl.attr('data-value', $li.attr('data-value'));
 			// targetEl.find('.label').html($li.find('.label').html());
+			targetEl.trigger('click');
 			selectFn(targetEl);
+			
 			// return false;
+		});
+		$dropList.off('mouseover').on('mouseover', '.list-item', function (e) {
+			var $li = $(this);
+			$dropList.find('.list-item').removeClass('hover');
+			$li.addClass('hover');
+		});
+		$dropList.off('mouseout').on('mouseout', '.list-item', function (e) {
+			var $li = $(this);
+			$dropList.find('.list-item.hover').removeClass('hover');
 		});
 	};
 	Hualala.UI.ChartDropList = ChartDropList;

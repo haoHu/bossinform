@@ -11,7 +11,7 @@
 	}
 	// .icon-person {color : #81909E;}
 	.dropdown-menu {
-		width : 100%; max-height : 380px; margin : 0; padding : 0; border : 1px none; .x-border-radius(0);
+		width : 100%; max-height : 480px; margin : 0; padding : 0; border : 1px none; .x-border-radius(0);
 	}
 }
 
@@ -180,7 +180,7 @@
 			display : block; font-size: 12px; line-height: 1.5em;  vertical-align: middle;
 			-webkit-order : 2; order : 2;
 			-webkit-flex : 1; flex : 1;	
-			text-indent : .5em;
+			text-indent : 0;
 		}
 	}
 
@@ -415,7 +415,7 @@
 	集团下拉菜单
  */
 .droplist-group, .droplist-cycle {
-	max-height : 380px; overflow: auto;
+	max-height : 480px; overflow: auto;
 	.label {
 		display: block;
 	}
@@ -424,8 +424,11 @@
 	}
 	.list-item {
 		padding : 15px 3px; border-bottom : 1px solid @gray-lighter;
-		&.active {
+		&.active, &.hover {
 			color : @brand-success;
+		}
+		&.hover {
+			background-color : lighten(@brand-success, 40%);
 		}
 		&:last-child {
 			border-bottom : 1px none;
@@ -433,12 +436,21 @@
 	}
 }
 
+.droplist-cycle {
+	.label {
+		text-align : center;
+	}
+}
+
 .droplist-shop {
 	height : 380px; position: relative; background-color: @gray-lighter;
 	.city-item, .shop-item {
 		padding : 15px 3px;
-		&.active {
+		&.active, &.hover {
 			color : @brand-success;
+		}
+		&.hover {
+			background-color : lighten(@brand-success, 40%);
 		}
 	}
 	.menu-city, .menu-shop {

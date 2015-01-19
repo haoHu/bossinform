@@ -1751,7 +1751,7 @@ select {
 }
 .bi-bar .dropdown-menu {
   width: 100%;
-  max-height: 380px;
+  max-height: 480px;
   margin: 0;
   padding: 0;
   border: 1px none;
@@ -2015,7 +2015,7 @@ select {
   order: 2;
   -webkit-flex: 1;
   flex: 1;
-  text-indent: .5em;
+  text-indent: 0;
 }
 .table-header > .table-cell.curdate {
   background-color: #f27935;
@@ -2244,7 +2244,7 @@ select {
  */
 .droplist-group,
 .droplist-cycle {
-  max-height: 380px;
+  max-height: 480px;
   overflow: auto;
 }
 .droplist-group .label,
@@ -2265,12 +2265,21 @@ select {
   border-bottom: 1px solid #eeeeee;
 }
 .droplist-group .list-item.active,
-.droplist-cycle .list-item.active {
+.droplist-cycle .list-item.active,
+.droplist-group .list-item.hover,
+.droplist-cycle .list-item.hover {
   color: #1fbba6;
+}
+.droplist-group .list-item.hover,
+.droplist-cycle .list-item.hover {
+  background-color: #b4f2ea;
 }
 .droplist-group .list-item:last-child,
 .droplist-cycle .list-item:last-child {
   border-bottom: 1px none;
+}
+.droplist-cycle .label {
+  text-align: center;
 }
 .droplist-shop {
   height: 380px;
@@ -2282,8 +2291,14 @@ select {
   padding: 15px 3px;
 }
 .droplist-shop .city-item.active,
-.droplist-shop .shop-item.active {
+.droplist-shop .shop-item.active,
+.droplist-shop .city-item.hover,
+.droplist-shop .shop-item.hover {
   color: #1fbba6;
+}
+.droplist-shop .city-item.hover,
+.droplist-shop .shop-item.hover {
+  background-color: #b4f2ea;
 }
 .droplist-shop .menu-city,
 .droplist-shop .menu-shop {

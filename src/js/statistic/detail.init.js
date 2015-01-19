@@ -226,11 +226,12 @@
 	BrandChartController.proto({
 		bindViewEvent : function () {
 			this.view.on({
-				render : function () {
+				render : function (cbFn) {
 					var self = this;
 					self.view.render();
 					self.view.drawChart();
 					self.view.setNavBtnHref();
+					IX.isFn(cbFn) && cbFn();
 				},
 				switchCycle : function () {
 					var self = this;
@@ -356,9 +357,22 @@
 				},
 				switchIndicator : function () {
 					var self = this;
-					self.emit('toggleMask', {act : 'show'});
-					self.view.emit('render');
-					self.emit('toggleMask', {act : 'hide'});
+					// self.emit('toggleMask', {act : 'show'});
+					self.emit('toggleMask', {
+						act : 'show',
+						cbFn : function () {
+							setTimeout(function () {
+								self.view.emit('render', function () {
+									self.emit('toggleMask', {act : 'hide'});
+								});
+							}, 200);
+							
+						}
+					});
+					// self.view.emit('render', function () {
+					// 	self.emit('toggleMask', {act : 'hide'});	
+					// });
+					
 				}
 			}, this);
 		}

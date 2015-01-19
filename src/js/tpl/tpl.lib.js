@@ -53,10 +53,13 @@
 	// 通用button
 	var tpl_common_btn = [
 		'<button class="btn {{clz}}">',
-			'{{#if isIconBtn}}',
-				'<span class="icon {{iconClz}}"></span>',
+			'{{#if leftIconClz}}',
+				'<span class="icon {{leftIconClz}}"></span>',
 			'{{/if}}',
 			'{{label}}',
+			'{{#if rightIconClz}}',
+				'<span class="icon {{rightIconClz}}"></span>',
+			'{{/if}}',
 		'</button>'
 	].join('');
 
@@ -333,7 +336,7 @@
 					'<span class="legend-icon {{iconClz}}"></span>',
 					'<span>{{{label}}}</span>',
 				'</span>',
-				'<span class="table-cell num">{{{value}}}</span>',
+				'<span class="table-cell num">{{{shortyValue}}}</span>',
 				'<span class="table-cell unit">{{{unit}}}</span>',
 			'</div>',
 			'{{/each}}',

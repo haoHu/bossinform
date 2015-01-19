@@ -467,7 +467,7 @@
 		{label : "优惠", type : "common", keys : "groupID,promotionAmountTotal,cashUnit", chartType : "promotionAmountTotal", items : "promotionAmountTotal"},
 		{label : "人均", type : "common", keys : "groupID,personAvg,cashUnit", chartType : "personAvg", items : "personAvg"},
 		{label : "单均", type : "common", keys : "groupID,orderAvg,cashUnit", chartType : "orderAvg", items : "orderAvg"},
-		{label : "客人构成", type : "chart", keys : "groupID,cashUnit", items : "vipOrderAmountTotal,unvipOrderAmountTotal", chartType : "customStructure", legends : Hualala.TypeDef.CustomStructure},
+		{label : "会员消费占比", type : "chart", keys : "groupID,cashUnit", items : "vipOrderAmountTotal,unvipOrderAmountTotal", chartType : "customStructure", legends : Hualala.TypeDef.CustomStructure},
 		{label : "订单构成", type : "chart", keys : "groupID,cashUnit", items : "untakeawayOrderAmountTotal,takeawayOrderAmountTotal", chartType : "orderStructure", legends : Hualala.TypeDef.OrderStructure},
 		{label : "收款构成", type : "list", keys : "groupID,paidAmountPayLst,cashUnit", chartType : "paidAmountPayLst"}
 	];

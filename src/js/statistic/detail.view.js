@@ -220,12 +220,13 @@
 		getHisDateStr : function (v) {
 			var dateStr = v.split('-');
 			if (dateStr.length == 2) {
-				dateStr = _.map(dateStr, function (d) {
-					return d;
-				});
-				dateStr = dateStr.join('<br/>-');
+				// dateStr = _.map(dateStr, function (d) {
+				// 	return d;
+				// });
+				// dateStr = dateStr.join('<br/>-');
+				dateStr = '从' + dateStr[0] + '<br/>到' + dateStr[1];
 			} else {
-				dateStr = dateStr[0];
+				dateStr = dateStr.join('');
 			}
 			return dateStr;
 		},
@@ -560,13 +561,15 @@
 									break;
 								default : 
 									o['value'] = val;
+									o['shortyValue'] = val;
 									break;
 							}
 						});
 						var _val = $XP(o, 'value', 0) + '';
 						_val = Hualala.Common.Math.mapNumeric(_val);
 						if (_val.orig.split('.')[0].length > 4) {
-							o['value'] = Number(_val.shorty);
+							o['shortyValue'] = Number(_val.shorty);
+							o['value'] = Number(_val.orig);
 							o['unit'] = _val.scale + o['unit'];
 						}
 
