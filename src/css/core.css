@@ -1761,6 +1761,16 @@ select {
   -o-border-radius: 0;
   border-radius: 0;
 }
+.bi-bar .bi-bar-title {
+  text-indent: -999em;
+  display: inline-block;
+  height: 44px;
+  width: 100%;
+  background-image: url(../img/logo.png);
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: auto 17px;
+}
 .bi-login-tab {
   z-index: 10;
   margin-top: -1px;
@@ -1805,8 +1815,8 @@ select {
   width: 100px;
 }
 .bi-login .info {
-  position: absolute;
-  bottom: 40px;
+  position: relative;
+  top: 40px;
   color: #eee;
 }
 .bi-login .info h5,

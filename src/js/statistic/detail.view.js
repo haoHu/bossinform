@@ -88,7 +88,7 @@
 						}
 					]
 				},
-				title : "老板通"
+				title : '<span class="bi-bar-title">老板通</span>'
 			};
 		},
 		mapFilterBarData : function (cities) {

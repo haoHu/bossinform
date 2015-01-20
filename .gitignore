@@ -4,4 +4,5 @@
 dist.zip
 *.shopbi-client.*_*.tar.gz
 npm-debug.log
+revision
 .DS_Store

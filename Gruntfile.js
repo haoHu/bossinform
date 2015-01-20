@@ -1,5 +1,6 @@
 'use strict';
 module.exports = function (grunt) {
+	var fs = require('fs');
 	// Time how long tasks take. Can help when optimizing build times
 	require('time-grunt')(grunt);
 
@@ -221,7 +222,7 @@ module.exports = function (grunt) {
 						dest : '<%= config.dist %>',
 						src : [
 							'*.{ico,png,txt}',
-							'img/{,*/}*.webp',
+							'img/{,*/}*.*',
 							'{,*/}*.html',
 							'font/{,*/}*.*'
 						]
@@ -564,6 +565,7 @@ module.exports = function (grunt) {
 		if (htmlTarget == 'mu' || htmlTarget == 'dohko' || htmlTarget == 'dist') {
 			grunt.task.run("clean:zip");
 			grunt.task.run("genSVNRevision:" + htmlTarget);
+			grunt.task.run("genRevision");
 			grunt.task.run("zip");
 			
 		}
@@ -598,12 +600,39 @@ module.exports = function (grunt) {
 		});
 	});
 
+	grunt.registerTask('genRevision', "Generate revision file", function () {
+		var done = this.async(),
+			fileName = config.zipFileName,
+			revisionFile = './revision';
+		var revisionValue = fileName.split('.')[2];
+		fs.exists(revisionFile, function (exists) {
+
+			if (exists) {
+				fs.unlinkSync(revisionFile);
+			}
+			fs.open(revisionFile, 'w+', function (err, fd) {
+				if (err) { throw err; }
+				var buffer = new Buffer(revisionValue),
+					bufferLength = buffer.length, filePosition = null;
+				fs.write(fd, buffer, 0, bufferLength, filePosition, function (err, written) {
+					if (err) {throw err;}
+					grunt.log.ok('wrote ' + written + ' bytes');
+					fs.close(fd, function (err) {
+						if (err) {throw err;}
+					});
+					done(true);
+				});
+			});
+			
+		});
+	});
+
 	grunt.registerTask('zip', "Zip builded files to dist.tar.gz", function () {
 		var done = this.async(),
 			exec = require('child_process').exec,
 			child;
 		var fileName = config.zipFileName,
-			cmd = 'tar -zcvf ' + fileName + ' ./dist';
+			cmd = 'tar -zcvf ' + fileName + ' ./dist ./revision';
 		grunt.log.ok("The zip file name is " + fileName);
 		child = exec(cmd, {
 			cwd : './'
