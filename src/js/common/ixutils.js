@@ -1542,6 +1542,10 @@ function AjaxCaller(routes, _ajaxFn, urlFac, chkRes){
 			type :  _caller.type,
 			contentType : _contentType,
 			data : _data,
+			// request with cookie for CORS
+			// xhrFields : {
+			// 	widthCredentials : true
+			// },
 			dataType : "jsonp",
 			jsonp : "callback",
 			jsonpCallback : "jsonpcallback",

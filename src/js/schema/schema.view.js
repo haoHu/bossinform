@@ -127,8 +127,7 @@
 						Hualala.Global.getDefaultImage("blank") :
 						Hualala.Common.getSourceImage(groupLogoImageUrl, {
 							width : 40,
-							height : 40,
-							quality : 50
+							height : 40
 						}),
 					personTotal : l1 > 4 ? personTotal.shorty : personTotal.orig,
 					personUnit : l1 > 4 ? (personTotal.scale + personUnit) : personUnit,

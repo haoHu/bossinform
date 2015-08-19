@@ -25,6 +25,7 @@
 				groupID : id,
 				groupLoginName : '集团' + id,
 				loginName : '子账号名称' + id,
+				// loginName : 'admin',
 				mobileBinded : 1,
 				userName : '用户名'
 			}));

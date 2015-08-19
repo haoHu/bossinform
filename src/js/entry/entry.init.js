@@ -306,7 +306,7 @@
 		},
 		initDynamicPWD : function () {
 			var self = this,
-				$el = self.$container.find('[name=group_mobile]').parent();
+				$el = self.$container.find('[name=mobile_pwd]').parent();
 			self.dinamicPWD = new DynamicPWD({
 				container : $el,
 				getParams : function () {
@@ -363,6 +363,7 @@
 				var id = $XP(el, 'id');
 				var $form = $('#' + id).find('form');
 				var fvOpts = self.initValidFieldOpts(id);
+				var $imgAuth = self.$container.find('[name=login_auth]');
 				$form.smileyValidator({
 					fields : fvOpts,
 					when : 'blur',
@@ -393,11 +394,22 @@
 								});
 								if (self.mode == 'login') {
 									self.authCode.genCode();
+									$imgAuth.val('');
+									// $form.smileyValidator('validateField', $imgAuth);
 								}
 							});
 						}
 					});
 				});
+				// $form.on('keyup', ':text,:password', function (e) {
+				// 	var $submitBtn = $form.find('.subBtn');
+				// 	var params = self.getFormData();
+				// 	var emptyFields = _.reject(params, function (el) {
+				// 		return !IX.isEmpty(el);
+				// 	});
+				// 	console.info("emptyFields length :" + emptyFields.length);
+				// 	$submitBtn[emptyFields.length == 0 ? 'removeClass' : 'addClass']('disabled');
+				// });
 			});
 		},
 		getFormData : function () {

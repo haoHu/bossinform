@@ -78,7 +78,7 @@
 						}
 					]
 				},
-				title : title + "分析图表"
+				title : title
 			};
 		},
 		bindCntEvent : function () {
@@ -116,6 +116,7 @@
 			});
 			hisData = $XP(hisData, 'data', []);
 			var dataList = curData.concat(hisData);
+			dataList.reverse();
 			var labels = self.mapDateList(dataList);
 			var indicatorCfg = _.find(self.chartIndicatorList, function (el) {
 				return $XP(el, 'chartType') == indicatorID;
@@ -289,47 +290,47 @@
 				clz : 'chart'
 			};
 		},
-		getScaleCfg : function () {
-			var self = this;
-			var chartData = self.curChartData,
-				labels = $XP(chartData, 'labels', []),
-				datasets = $XP(chartData, 'datasets', []);
-			var datalist = [];
-			_.each(datasets, function (dataset) {
-				datalist = datalist.concat(dataset.data);
-			});
-			var maxVal = _.max(datalist, function (el) {return parseFloat(el);}),
-				minVal = _.max(datalist, function (el) {return parseFloat(el);});
+		// getScaleCfg : function () {
+		// 	var self = this;
+		// 	var chartData = self.curChartData,
+		// 		labels = $XP(chartData, 'labels', []),
+		// 		datasets = $XP(chartData, 'datasets', []);
+		// 	var datalist = [];
+		// 	_.each(datasets, function (dataset) {
+		// 		datalist = datalist.concat(dataset.data);
+		// 	});
+		// 	var maxVal = _.max(datalist, function (el) {return parseFloat(el);}),
+		// 		minVal = _.max(datalist, function (el) {return parseFloat(el);});
 
-			var scaleSteps = 10;
-			var dlta = maxVal - minVal,
-				avg = parseInt(dlta / 10);
-			var scaleStepWidth = dlta == 0 ? minVal : avg;
-			var scaleStartValue = dlta == 0 ? 0 : minVal;
-			return {
-				responsive : true,
-				scaleOverlay : true,
-				// scaleOverride : true,
-				// scaleSteps : scaleSteps,
-				// scaleStepWidth : scaleStepWidth,
-				// scaleStartValue : scaleStartValue,
-				scaleFontFamily : "'Microsoft Yahei'",
-				scaleFontSize : 12,
-				scaleFontColor : 'rgb(145,165,183)',
-				scaleShowGridLines : true,
-				scaleGridLinesColor : "rgba(103,112,124, 1)",
-				pointDotRadius : 5,
-				onAnimationComplete : function () {
-					// console.info(arguments);
-				},
-				tooltipTitleFontStyle : 'bold',
-				multiTooltipTemplate : '<%if (datasetLabel){%><%=datasetLabel%>: <%}%><%= value %>',
-				legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].lineColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
+		// 	var scaleSteps = 10;
+		// 	var dlta = maxVal - minVal,
+		// 		avg = parseInt(dlta / 10);
+		// 	var scaleStepWidth = dlta == 0 ? minVal : avg;
+		// 	var scaleStartValue = dlta == 0 ? 0 : minVal;
+		// 	return {
+		// 		responsive : true,
+		// 		scaleOverlay : true,
+		// 		scaleOverride : true,
+		// 		scaleSteps : scaleSteps,
+		// 		scaleStepWidth : scaleStepWidth,
+		// 		scaleStartValue : scaleStartValue,
+		// 		scaleFontFamily : "'Microsoft Yahei'",
+		// 		scaleFontSize : 12,
+		// 		scaleFontColor : 'rgb(145,165,183)',
+		// 		scaleShowGridLines : true,
+		// 		scaleGridLinesColor : "rgba(103,112,124, 1)",
+		// 		pointDotRadius : 5,
+		// 		onAnimationComplete : function () {
+		// 			// console.info(arguments);
+		// 		},
+		// 		tooltipTitleFontStyle : 'bold',
+		// 		multiTooltipTemplate : '<%if (datasetLabel){%><%=datasetLabel%>: <%}%><%= value %>',
+		// 		legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].lineColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
 
-			};
+		// 	};
 			
 			 
-		},
+		// },
 		// drawChart : function () {
 		// 	var self = this;
 		// 	var $chartList = self.$curCnt.find('.chart-list');
@@ -423,6 +424,40 @@
 		// 		startPercent = movePercent;
 		// 	};
 		// },
+		
+		// 获取图表纵坐标配置
+		getScaleCfg : function (series) {
+			var self = this;
+			var _data = series[0].data,
+				_platData = _.flatten(_.pluck(series, 'data')),
+				max = Math.max.apply(null, _platData),
+				scaleOverride = true,
+				scaleSteps  = _data.length,
+				scaleStepWidth = Math.floor(max / scaleSteps) + 1,
+				scaleStartValue = 0;
+			
+			var c = _.countBy(_platData, function (n) {
+				return Math.floor(n / 10000) > 1 ? 10000 : 1;
+			});
+			var rate = c['10000'] > (_platData.length / 3) ? 10000 : 1,
+				rateStr = rate == 10000 ? '万' : '',
+				labelTpl = rate == 10000 ? "<%=value == 0 ? ('(万)' + value) : (value/10000).toFixed(2)%>" : "<%=value%>";
+			return {
+				responsive : true,
+				scaleOverride : scaleOverride,
+				scaleStepWidth : scaleStepWidth,
+				scaleStartValue : scaleStartValue,
+				scaleSteps : scaleSteps,
+				scaleLabel : labelTpl,
+				scaleLineWidth : 1,
+				scaleShowLabels : true,
+				scaleLineColor : "rgba(255, 255, 255, .8)",
+				scaleFontFamily : "'Microsoft Yahei'",
+				scaleFontSize : 12,
+				scaleFontColor : 'rgb(145,165,183)'
+			};
+		},
+
 		drawChart : function () {
 			var self = this;
 			var $chartList = self.$curCnt.find('.chart-list');
@@ -432,7 +467,7 @@
 			var viewWidth = self.$curCnt.width(),
 				viewHeight = self.$curCnt.height() * 0.8;
 			var pageCount = labelList.length;
-			
+			var len = labelList.length;
 			_.each(labelList, function (labels, pIdx) {
 				var series = seriesList[pIdx];
 				var $canvasBox = $('<div class="chart-canvas pull-left"></div>');
@@ -455,17 +490,17 @@
 
 				$canvasBox.appendTo($chartList);
 				var ctx = $canvas[0].getContext("2d");
+
+				// var _datas = series[0].data,
+				// 	max = Math.max.apply(null, _datas),
+				// 	scaleSteps = 7,
+				// 	scaleStepWidth = Math.floor(max / scaleSteps) + 1,
+				// 	scaleStartValue = 0;
 				var chart = new Chart(ctx).Line({
 					labels : labels,
 					// labels : _.map(labels, function (el) { return el + '(' + pIdx + ')'}),
 					datasets : series
-				}, {
-					responsive : true,
-					scaleOverlay : true,
-					scaleFontFamily : "'Microsoft Yahei'",
-					scaleFontSize : 12,
-					scaleFontColor : 'rgb(145,165,183)',
-					scaleShowGridLines : true,
+				}, IX.inherit({
 					scaleGridLinesColor : "rgba(103,112,124, 1)",
 					pointDotRadius : 5,
 					animation : false,
@@ -475,7 +510,7 @@
 					tooltipTitleFontStyle : 'bold',
 					multiTooltipTemplate : '<%if (datasetLabel){%><%=datasetLabel%>: <%}%><%= value %>',
 					legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].lineColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
-				});
+				}, self.getScaleCfg(series)));
 				$canvas.data('data.chart', chart);
 				var png = chart.toBase64Image();
 				$img.attr('src', png);
@@ -483,11 +518,13 @@
 			});
 			$chartList.css({
 				width : pageCount * viewWidth + 'px',
-				height : viewHeight + 'px'
+				height : viewHeight + 'px',
+				'WebkitTransition' : 'none',
+				'WebkitTransform' : 'translate3d(' + ((1 - len) * 100) + '%, 0, 0'
 			});
 
-			var startPercent = 0,
-				movePercent = 0,
+			var startPercent = 1 - len,
+				movePercent = 1 - len,
 				preventSlide = false,
 				$pages = $chartList.find('.chart-canvas');
 
@@ -497,6 +534,8 @@
 					var bodyWidth = self.$curCnt.width(),
 						xDelta = data.movePoint.x - data.lastMovePoint.x,
 						newMovePercent = movePercent + (xDelta / bodyWidth);
+					console.info("xDelta:" + xDelta);
+					console.info("newMovePercent:" + newMovePercent);
 					if (phase === 'move') {
 						// console.info('move:' + newMovePercent);
 						if (newMovePercent < 0 && newMovePercent > (1 - $pages.length)) {

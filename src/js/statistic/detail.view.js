@@ -91,12 +91,12 @@
 				title : '<span class="bi-bar-title">老板通</span>'
 			};
 		},
-		mapFilterBarData : function (cities) {
+		mapFilterBarData : function (data) {
 			var self = this;
 			var fields = HT.FilterFields;
 			var items = _.map(fields, function (el) {
 				var k = $XP(el, 'key'), clz = $XP(el, 'clz');
-				var label = '', value = '', isShopFilter = false, cityID = '';
+				var label = '', value = '', isShopFilter = false, cityID = '', tmp;
 				switch(k) {
 					case 'groupIDLst':
 						value = self.curGroupIDLst || '';
@@ -108,29 +108,37 @@
 						if (IX.isEmpty(cityID) && IX.isEmpty(value)) {
 							label = '全部店铺';
 						} else if (!IX.isEmpty(cityID) && IX.isEmpty(value)) {
-							label = '全部店铺';
-							_.each(cities, function (c) {
+							label = '';
+							_.each(data, function (c) {
 								var cid = $XP(c, 'cityID'),
 									cityName = $XP(c, 'cityName');
-								if (cid == cityID) {
-									label = cityName + label;
+								if (cid == cityID && !label) {
+									label = cityName + '全部店铺';
 								}
 							});
 						} else {
 							label = '';
-							_.each(cities, function (c) {
-								var cid = $XP(c, 'cityID'),
-									cityName = $XP(c, 'cityName'),
-									shops = $XP(c, 'shops', []);
-								_.each(shops, function (s) {
-									var sid = $XP(s, 'shopID'),
-										shopName = $XP(s, 'shopName');
-									if (sid == value) {
-										label = shopName;
-										cityID = cid;
-									}
-								});
+							// _.each(cities, function (c) {
+							// 	var cid = $XP(c, 'cityID'),
+							// 		cityName = $XP(c, 'cityName'),
+							// 		shops = $XP(c, 'shops', []);
+							// 	_.each(shops, function (s) {
+							// 		var sid = $XP(s, 'shopID'),
+							// 			shopName = $XP(s, 'shopName');
+							// 		if (sid == value) {
+							// 			label = shopName;
+							// 			cityID = cid;
+							// 		}
+							// 	});
+							// });
+							tmp = _.find(data, function (el) {
+								var cid = $XP(el, 'cityID'),
+									sid = $XP(el, 'shopID'),
+									shopName = $XP(el, 'shopName');
+								return (cid == cityID && sid == value);
 							});
+							label = $XP(tmp, 'shopName', '');
+							
 						}
 						isShopFilter = true;
 						break;
@@ -165,8 +173,7 @@
 			url = IX.isEmpty(url) ? Hualala.Global.getDefaultImage("blank") :
 				Hualala.Common.getSourceImage(url, {
 					width : 40,
-					height : 40,
-					quality : 50
+					height : 40
 				});
 			return url;
 		},
@@ -204,8 +211,8 @@
 				
 			// });
 			// For fix android below 4.4 in webkit bug
-			Hualala.ShopManager.getShopDataSetByGroupID(this.curGroupIDLst, function (cities) {
-				var htm = toolbarTpl(self.mapFilterBarData(cities));
+			Hualala.ShopManager.getShopDataSetByGroupID(this.curGroupIDLst, function (data) {
+				var htm = toolbarTpl(self.mapFilterBarData(data));
 				var $content = self.container.find('.content'),
 					$toolbar = self.container.find('.bi-toolbar');
 				if ($toolbar.length > 0) {
@@ -510,14 +517,19 @@
 				var _val = $XP(_col, 'value', 0) + '';
 				_val = Hualala.Common.Math.mapNumeric(_val);
 				if (_val.orig.split('.')[0].length > 4) {
-					_col['value'] = Number(_val.shorty);
-					_col['unit'] = _val.scale + _col['unit'];
+					// for STORY #1321 
+					// _col['value'] = Number(_val.shorty);
+					// _col['unit'] = _val.scale + _col['unit'];
+					_col['value'] = Number(_val.orig);
 				}
 				var _val1 = $XP(_col, 'waitCheckoutOrderAmountTotal', 0) + '';
 				_val1 = Hualala.Common.Math.mapNumeric(_val1);
 				if (_val1.orig.split('.')[0].length > 4) {
-					_col['waitCheckoutOrderAmountTotal'] = Number(_val1.shorty);
-					_col['waitCheckoutOrderUnit'] = _val1.scale + Hualala.Constants.CashUnit;
+					// for STORY #1321
+					// _col['waitCheckoutOrderAmountTotal'] = Number(_val1.shorty);
+					// _col['waitCheckoutOrderUnit'] = _val1.scale + Hualala.Constants.CashUnit;
+					_col['waitCheckoutOrderAmountTotal'] = Number(_val1.orig);
+					_col['waitCheckoutOrderUnit'] = Hualala.Constants.CashUnit;
 				} else {
 					_col['waitCheckoutOrderUnit'] = Hualala.Constants.CashUnit;
 				}
@@ -608,12 +620,22 @@
 				});
 				_col['items'] = _.map(_col['items'], function (item) {
 					var _val = $XP(item, 'payAmount', 0) + '';
-					_val = Hualala.Common.Math.mapNumeric(_val);
+					// for STORY #1321
+					// _val = Hualala.Common.Math.mapNumeric(_val);
+					// return IX.inherit(item, {
+					// 	value : _val.orig.split('.')[0].length > 4 ? Number(_val.shorty) : Number(_val.orig),
+					// 	unit : _val.orig.split('.')[0].length > 4 ? (_val.scale + _col['cashUnit']) : _col['cashUnit']
+					// });
 					return IX.inherit(item, {
-						value : _val.orig.split('.')[0].length > 4 ? Number(_val.shorty) : Number(_val.orig),
-						unit : _val.orig.split('.')[0].length > 4 ? (_val.scale + _col['cashUnit']) : _col['cashUnit']
+						value : _val,
+						unit : _col['cashUnit']
 					});
 				});
+				_col['items'] = _.sortBy(_col['items'], function (item) {
+					var _val = parseFloat($XP(item, 'payAmount', 0));
+					return _val;
+				});
+				_col['items'] = _col['items'].reverse();
 				return _col;
 			});
 			return cols;
@@ -712,6 +734,7 @@
 				isCurDate = $tblCell.hasClass('curdate') ? true : false,
 				$legends = $chartCanvas.parent().find('.chart-legend');
 			var data = [], count = 0;
+			var showPercent = null;
 			$legends.each(function (i, el) {
 				var bgColor = i != 0 ? '#CCC' : (isCurDate ? '#F27935' : '#1FBBA6');
 				var $el = $(el);
@@ -723,9 +746,12 @@
 					value : value
 				});
 			});
-			data = _.map(data, function (el) {
+			data = _.map(data, function (el, idx) {
 				var _percent = parseFloat($XP(el, 'value') / count);
 				var percent = count == 0 ? 0 : (_percent == 0 ? 0.0001 : _percent);
+				if (idx == 0) {
+					showPercent = Math.floor(percent * 10000)/100 + '%';
+				}
 				return IX.inherit(el, {
 					value : percent
 				});
@@ -733,8 +759,10 @@
 			var $canvas = $('<canvas class="chart-canvas"></canvas>').css({
 				position : 'relative'
 			}).hide();
+			var $showPercent = $('<div class="chart-title"></div>').html(showPercent).hide();
 			$canvas.attr('width', $chartCanvas.width()).attr('height', $chartCanvas.height());
 			$chartCanvas.empty().append($canvas);
+			$chartCanvas.append($showPercent);
 			var ctx = $canvas[0].getContext("2d");
 			var chart = new Chart(ctx).Pie(data, {
 				segmentStrokeWidth : 0,
@@ -745,6 +773,7 @@
 			});
 			var png = chart.toBase64Image();
 			$canvas.show();
+			$showPercent.show();
 			// var $img = $('<img>').css({
 			// 	display : 'block',
 			// 	width : '100%',

@@ -44,6 +44,40 @@
 	};
 	Hualala.UI.TopTip = TopTip;
 
+	/**
+	 * Confirm 提示框
+	 * @param {Object} cfg  {title, msg, okLabel, okFn, cancelLabel, cancelFn}
+	 */
+	var Confirm = function (cfg) {
+		var tpl = hbr.compile(TplLib.get('tpl_site_confirm'));
+		var okLabel = $XP(cfg, 'okLabel', '好的'),
+			cancelLabel = $XP(cfg, 'cancelLabel', '取消');
+		var okFn = $XF(cfg, 'okFn'),
+			cancelFn = $XF(cfg, 'cancelFn');
+		var el = $(tpl({
+			clz : 'mask-dark',
+			id : IX.id(),
+			title : $XP(cfg, 'title', ''),
+			msg : $XP(cfg, 'msg', ''),
+			okLabel : okLabel,
+			cancelLabel : cancelLabel
+		}));
+		el.on('click', '.btn', function (e) {
+			var $btn = $(this),
+				act = $btn.hasClass('btn-success') ? 'ok' : 'cancel';
+			if (act == 'ok') {
+				okFn();
+			} else {
+				cancelFn();
+			}
+			el.find('.alert').alert('close');
+			el.remove();
+		});
+		el.appendTo('body');
+		el.find('.alert').alert();
+	};
+	Hualala.UI.Confirm = Confirm;
+
 	var GroupDropList = function (cfg) {
 		var tpl = hbr.compile(TplLib.get('tpl_group_droplist'));
 		var container = $XP(cfg, 'container'),
@@ -65,8 +99,7 @@
 						Hualala.Global.getDefaultImage("blank") :
 						Hualala.Common.getSourceImage(groupLogoImageUrl, {
 							width : 40,
-							height : 40,
-							quality : 50
+							height : 40
 						});
 
 				return {

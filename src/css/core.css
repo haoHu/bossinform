@@ -1796,7 +1796,6 @@ select {
   border-radius: 50%;
   width: 80px;
   height: 80px;
-  background: #E0DDDB;
   font-size: 48px;
   margin: 1em auto;
 }
@@ -1810,6 +1809,9 @@ select {
 .bi-login .btn-positive.hover,
 .bi-login .btn-positive.focus {
   color: #fff;
+}
+.bi-login .btn-positive.disabled {
+  background: #E0DDDB;
 }
 .bi-login .bi-dynamicpwd {
   width: 100px;
@@ -2115,8 +2117,23 @@ select {
   visibility: hidden;
 }
 .bi-table .table-body .chart .chart-canvas {
+  position: relative;
   height: 100px;
   width: 100%;
+}
+.bi-table .table-body .chart .chart-canvas > .chart-title {
+  position: absolute;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  top: 50%;
+  margin-top: -1rem;
+  line-height: 2rem;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 1rem;
+  color: #fff;
+  font-weight: bolder;
 }
 .bi-table .table-body .chart .chart-legend {
   text-align: left;
@@ -2375,8 +2392,6 @@ select {
 }
 .bi-profile .card > .btn-logout {
   margin-top: 2em;
-  background-color: #e1e1e1;
-  border: 1px solid #eeeeee;
   color: #fff;
 }
 .bi-profile .form-control > label {
@@ -2384,7 +2399,7 @@ select {
 }
 .bi-profile .form-control > span[type=static] {
   vertical-align: middle;
-  line-height: 2em;
+  line-height: 1.8em;
 }
 /*Mask loading*/
 @-webkit-keyframes 'rotate' {
@@ -2482,6 +2497,16 @@ select {
   line-height: 1.5em;
   color: #555555;
   vertical-align: middle;
+}
+.site-confirm {
+  position: absolute;
+  width: 80%;
+  max-height: 200px;
+  top: 50%;
+  left: 50%;
+  margin-left: -40%;
+  margin-top: -25%;
+  background-color: #fff;
 }
 .site-toptip {
   position: fixed;

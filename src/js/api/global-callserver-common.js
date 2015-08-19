@@ -10,15 +10,15 @@
 		// Dynamic Login
 		["dynamicLoginCallServer", "/dynamicLogin.ajax", "", "POST"],
 		// 获取短信动态密码
-		["getMobileDynamicPWD", "/getDynamicCode.ajax", "", "GET"],
+		["getMobileDynamicPWD", "/getDynamicCode.ajax", "", "POST"],
 		// 获取动态验证码
 		["genAuthCode", "/getCheckCode.ajax", "", "POST"],
 		// Session Data
-		["loadAppData", "/getUserInfo.ajax", "", "GET"],
+		["loadAppData", "/getUserInfo.ajax", "", "POST"],
 		// 获取城市店铺数据
-		["getShopQuerySchema", "/shop/schema.ajax", "", "GET"],
+		["getShopQuerySchema", "/shop/schema.ajax", "", "POST"],
 		// 获取集团统计数据
-		["getGroupStatistic", "/getGroupLst.ajax", "", "GET"]
+		["getGroupStatistic", "/getGroupLst.ajax", "", "POST"]
 	];
 	HG.APIMappingUrls = MappingURLs;
 	// 接口注册

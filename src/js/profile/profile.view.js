@@ -6,7 +6,8 @@
 		TplLib = Hualala.TplLib;
 
 	var SingleBrandProfileKeys = 'loginName,userName,userMobile,loginPWD'.split(','),
-		MultiBrandProfileKeys = 'userMobile'.split(',');
+		MultiBrandProfileKeys = 'userMobile'.split(','),
+		SuperAdminProfileKeys = 'isSuperAdmin'.split(',');
 
 	var ProfileView = Stapes.subclass({
 		/**
@@ -64,14 +65,14 @@
 			var parentNames = HP.getParentNamesByPath();
 			return {
 				clz : '',
-				commonBtn : {
-					items : [
-						{
-							clz : 'btn-link pull-right btn-logout',
-							label : '退出'
-						}
-					]
-				},
+				// commonBtn : {
+				// 	items : [
+				// 		{
+				// 			clz : 'btn-link pull-right btn-logout',
+				// 			label : '退出'
+				// 		}
+				// 	]
+				// },
 				iconBtn : {
 					items : [
 						{
@@ -88,48 +89,60 @@
 		mapProfileRenderData : function () {
 			var self = this;
 			var profile = self.model.getProfileInfo();
+			var isSuperAdmin = $XP(profile, 'loginName', '') == 'admin';
 			var items = [];
 			if (self.profileType == 'single') {
-				_.each(SingleBrandProfileKeys, function (k) {
-					var v = $XP(profile, k, ''),
-						dispVal = '', label = '';
-					// loginName,userMobile
-					switch (k) {
-						case 'userMobile' :
-							label = '手机号';
-							dispVal = $XP(Hualala.Common.codeMask(v, 3, -4), 'val', '');
-							break;
-						case 'userName':
-							label = '姓名';
-							dispVal = v;
-							break;
-						case 'loginName':
-							label = '子账号';
-							dispVal = v;
-							break;
-						case 'loginPWD':
-							label = '登录密码';
-							if (IX.isEmpty(v)) {
-								dispVal = $XP(Hualala.Common.codeMask('123456', 0), 'val', '');
-							} else {
-								dispVal = $XP(Hualala.Common.codeMask(v, 0), 'val', '');
-							}
-							
-							break;
-						default :
-							break;
-					};
+				if (!isSuperAdmin) {
+					_.each(SingleBrandProfileKeys, function (k) {
+						var v = $XP(profile, k, ''),
+							dispVal = '', label = '';
+						// loginName,userMobile
+						switch (k) {
+							case 'userMobile' :
+								label = '手机号';
+								dispVal = $XP(Hualala.Common.codeMask(v, 3, -4), 'val', '');
+								break;
+							case 'userName':
+								label = '姓名';
+								dispVal = v;
+								break;
+							case 'loginName':
+								label = '子账号';
+								dispVal = v;
+								break;
+							case 'loginPWD':
+								label = '登录密码';
+								if (IX.isEmpty(v)) {
+									dispVal = $XP(Hualala.Common.codeMask('123456', 0), 'val', '');
+								} else {
+									dispVal = $XP(Hualala.Common.codeMask(v, 0), 'val', '');
+								}
+								
+								break;
+							default :
+								break;
+						};
+						items.push({
+							type : 'static',
+							label : label,
+							value : v,
+							dispVal : dispVal,
+							name : k,
+							id : k + '_' + IX.id(),
+							key : k
+						});
+					});
+				} else {
 					items.push({
 						type : 'static',
-						label : label,
-						value : v,
-						dispVal : dispVal,
-						name : k,
-						id : k + '_' + IX.id(),
-						key : k
+						label : '账号',
+						value : $XP(profile, 'loginName', ''),
+						dispVal : '系统管理员',
+						name : 'isSuperAdmin',
+						id : 'loginName_' + IX.id(),
+						key : 'loginName'
 					});
-				});
-
+				}
 			} else {
 				_.each(MultiBrandProfileKeys, function (k) {
 					var v = $XP(profile, k, '');
@@ -149,7 +162,7 @@
 				clz : '',
 				items : items,
 				btn : {
-					clz : 'btn-default btn-logout btn-lg',
+					clz : 'btn-positive btn-logout btn-lg ',
 					act : 'logout',
 					disabled : '',
 					label : '退出'
@@ -166,7 +179,20 @@
 		bindEvent : function () {
 			var self = this;
 			self.container.on('click', '.btn-logout', function (e) {
-				HP.jumpPage(HP.createPath('login'));
+				Hualala.UI.Confirm({
+					title : '退出登录',
+					msg : '需要退出登录吗？',
+					okFn : function () {
+						Hualala.ShopManager.destroy();
+						Hualala.destroySession();
+						Hualala.Shopmanager = null;
+						HP.jumpPage(HP.createPath('login'));
+					},
+					cancelFn : function () {
+
+					}
+				});	
+				
 			});
 			
 		}

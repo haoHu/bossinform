@@ -311,7 +311,7 @@
 		var params = arguments;
 		return this.each(function () {
 			var $this = $(this),
-				data = $this.data('smiley'),
+				data = $this.data('smileyValidator'),
 				option = 'object' === typeof options && options;
 			if (!data) {
 				data = new IsSmileyValidator(this, option);

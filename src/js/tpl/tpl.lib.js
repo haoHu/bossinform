@@ -19,6 +19,29 @@
 	].join('');
 	TemplateList.register("tpl_site_toptip", tpl_site_toptip);
 
+	// Site confirm template
+	var tpl_site_confirm = [
+		'<div class="site-mask {{clz}}">',
+			'<div id="site_confirm_{{id}}" class="site-confirm alert fade in ">',
+				'<header class="">',
+					'<h4>{{{title}}}</h4>',
+				'</header>',
+				'<div class="">',
+					'<p>{{{msg}}}</p>',
+				'</div>',
+				'<footer class="row">',
+					'<div class="col-xs-6">',
+						'<button class="btn btn-default btn-block" act="cancel">{{{cancelLabel}}}</button>',
+					'</div>',
+					'<div class="col-xs-6">',
+						'<button class="btn btn-success btn-block" act="ok">{{{okLabel}}}</button>',
+					'</div>',
+				'</footer>',
+			'</div>',
+		'</div>'
+	].join('');
+	TemplateList.register("tpl_site_confirm", tpl_site_confirm);
+
 	// Site Loading Mask template
 	var tpl_site_loadingmask = [
 		'<div id="site_mask_{{id}}" class="site-mask {{clz}}">',
@@ -100,7 +123,7 @@
 									'<input type="{{type}}" placeholder="{{placeholder}}" name="{{name}}" data-key="{{key}}" id="{{id}}" />',
 								'</div>',
 							'{{/each}}',
-							'<button class="btn btn-positive btn-block subBtn" >',
+							'<button class="btn btn-positive btn-block subBtn " >',
 								'<span class="icon icon-check"></span>',
 							'</button>',
 						'</form>',

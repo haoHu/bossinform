@@ -351,6 +351,10 @@
 		},
 		getGroupSet : function () {
 			return this.groupHT.getAll();
+		},
+		destroy : function () {
+			this.groupHT.clear();
+			this.groupHT.destroy();
 		}
 	});
 

@@ -20,6 +20,10 @@
 		cbFn();
 	}
 
+	Hualala.destroySession = function () {
+		sessionData = null;
+	};
+
 	function initMainPage(cbFn) {
 		var tick = IX.getTimeInMS();
 		var HPR = Hualala.PageRoute;
@@ -66,7 +70,7 @@
 			Hualala.PageRoute.start(function (pageName, pageParams, pageInitFn) {
 				initMainPage(function () {
 					// Hualala.Common.initPageLayout({}, pageName);
-					if (!Hualala.ShopManager) {
+					if (!Hualala.ShopManager || pageName != 'login') {
 						Hualala.ShopManager = new Hualala.Model.ShopModel();
 					}
 					pageInitFn && pageInitFn.apply(null, [pageName, pageParams]);

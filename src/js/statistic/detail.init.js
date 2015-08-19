@@ -8,6 +8,7 @@
 			this.container = $XP(cfg, 'container', null);
 			this.view = $XP(cfg, 'view', null);
 			this.model = $XP(cfg, 'model', null);
+			this.refreshTimer = null;
 
 			if (!this.container || !this.view || !this.model) {
 				throw("Brand Detail Controller build failed!");
@@ -35,24 +36,83 @@
 				load : function (params) {
 					var self = this;
 					self.init(params);
+					this.clearRefreshTimer();
+					self.emit('toggleMask', {
+						act : 'show'
+					});
+					// self.model.load(function (res) {
+					// 	self.view.initToolbar(function () {
+					// 		self.view.emit('render');
+					// 		self.emit('toggleMask', {
+					// 			act : 'hide',
+					// 			cbFn : function () {
+					// 				Hualala.UI.TopTip({
+					// 					msg : '加载成功',
+					// 					type : 'success'
+					// 				});
+					// 			}
+					// 		});
+					// 		this.refreshTimer = setTimeout(function () {
+					// 			self.emit('loadData');
+					// 		}, (Hualala.TypeDef.AutoRefreshDataSeconds * 1000));
+					// 	});
+					// }, function (res) {
+					// 	// TODO fail handle
+					// 	self.emit('toggleMask', {
+					// 		act : 'hide',
+					// 		cbFn : function () {
+					// 			Hualala.UI.TopTip({
+					// 				msg : $XP(res, 'resultmsg', '加载失败'),
+					// 				type : 'danger'
+					// 			});
+					// 		}
+					// 	});
+					// });
+					self.emit('loadData', function () {
+						self.view.initToolbar(function () {
+							// self.view.emit('render');
+							// self.emit('toggleMask', {
+							// 	act : 'hide',
+							// 	cbFn : function () {
+							// 		Hualala.UI.TopTip({
+							// 			msg : '加载成功',
+							// 			type : 'success'
+							// 		});
+							// 	}
+							// });
+						});
+					});
+				},
+				toggleMask : function (opts) {
+					var self = this;
+					var $body = $('body');
+					var act = $XP(opts, 'act', 'hide'),
+						cbFn = $XF(opts, 'cbFn');
+					$body.mask && $body.mask(act, cbFn);
+				},
+				loadData : function (cbFn) {
+					var self = this;
 					self.emit('toggleMask', {
 						act : 'show'
 					});
 					self.model.load(function (res) {
-						self.view.initToolbar(function () {
-							self.view.emit('render');
-							self.emit('toggleMask', {
-								act : 'hide',
-								cbFn : function () {
-									Hualala.UI.TopTip({
-										msg : '加载成功',
-										type : 'success'
-									});
-								}
-							});
+						self.view.emit('render');
+						self.emit('toggleMask', {
+							act : 'hide',
+							cbFn : function () {
+								Hualala.UI.TopTip({
+									msg : '加载成功',
+									type : 'success'
+								});
+							}
 						});
+						cbFn && cbFn();
+						if (!this.refreshTimer) {
+							this.refreshTimer = setInterval(function () {
+								self.emit('loadData');
+							}, (Hualala.TypeDef.AutoRefreshDataSeconds * 1000));
+						}
 					}, function (res) {
-						// TODO fail handle
 						self.emit('toggleMask', {
 							act : 'hide',
 							cbFn : function () {
@@ -63,13 +123,6 @@
 							}
 						});
 					});
-				},
-				toggleMask : function (opts) {
-					var self = this;
-					var $body = $('body');
-					var act = $XP(opts, 'act', 'hide'),
-						cbFn = $XF(opts, 'cbFn');
-					$body.mask && $body.mask(act, cbFn);
 				}
 			}, this);
 			
@@ -89,28 +142,29 @@
 					self.model.updateQueryParams(IX.inherit(params, {
 						cycleType : self.view.curCycleType
 					}));
-					self.model.load(function (res) {
-						self.view.emit('render');
-						self.emit('toggleMask', {
-							act : 'hide',
-							cbFn : function () {
-								Hualala.UI.TopTip({
-									msg : '加载成功',
-									type : 'success'
-								});
-							}
-						});
-					}, function (res) {
-						self.emit('toggleMask', {
-							act : 'hide',
-							cbFn : function () {
-								Hualala.UI.TopTip({
-									msg : $XP(res, 'resultmsg', '加载失败'),
-									type : 'danger'
-								});
-							}
-						});
-					});
+					// self.model.load(function (res) {
+					// 	self.view.emit('render');
+					// 	self.emit('toggleMask', {
+					// 		act : 'hide',
+					// 		cbFn : function () {
+					// 			Hualala.UI.TopTip({
+					// 				msg : '加载成功',
+					// 				type : 'success'
+					// 			});
+					// 		}
+					// 	});
+					// }, function (res) {
+					// 	self.emit('toggleMask', {
+					// 		act : 'hide',
+					// 		cbFn : function () {
+					// 			Hualala.UI.TopTip({
+					// 				msg : $XP(res, 'resultmsg', '加载失败'),
+					// 				type : 'danger'
+					// 			});
+					// 		}
+					// 	});
+					// });
+					self.emit('loadData');
 				},
 				switchBrand : function () {
 					var self = this;
@@ -124,28 +178,30 @@
 					self.view.curShopIDLst = '';
 					self.view.curCityIDLst = '';
 					self.view.resetShopFilter();
-					self.model.load(function (res) {
-						self.view.emit('render');
-						self.emit('toggleMask', {
-							act : 'hide',
-							cbFn : function () {
-								Hualala.UI.TopTip({
-									msg : '加载成功',
-									type : 'success'
-								});
-							}
-						});
-					}, function (res) {
-						self.emit('toggleMask', {
-							act : 'hide',
-							cbFn : function () {
-								Hualala.UI.TopTip({
-									msg : $XP(res, 'resultmsg', '加载失败'),
-									type : 'danger'
-								});
-							}
-						});
-					});
+					// self.model.load(function (res) {
+					// 	self.view.emit('render');
+					// 	self.emit('toggleMask', {
+					// 		act : 'hide',
+					// 		cbFn : function () {
+					// 			Hualala.UI.TopTip({
+					// 				msg : '加载成功',
+					// 				type : 'success'
+					// 			});
+					// 		}
+					// 	});
+					// }, function (res) {
+					// 	self.emit('toggleMask', {
+					// 		act : 'hide',
+					// 		cbFn : function () {
+					// 			Hualala.UI.TopTip({
+					// 				msg : $XP(res, 'resultmsg', '加载失败'),
+					// 				type : 'danger'
+					// 			});
+					// 		}
+					// 	});
+					// });
+					
+					self.emit('loadData');
 				},
 				switchShop : function (opts) {
 					var self = this;
@@ -183,28 +239,30 @@
 						self.view.curShopIDLst = shopID;
 					}
 					
-					self.model.load(function (res) {
-						self.view.emit('render');
-						self.emit('toggleMask', {
-							act : 'hide',
-							cbFn : function () {
-								Hualala.UI.TopTip({
-									msg : '加载成功',
-									type : 'success'
-								});
-							}
-						});
-					}, function (res) {
-						self.emit('toggleMask', {
-							act : 'hide',
-							cbFn : function () {
-								Hualala.UI.TopTip({
-									msg : $XP(res, 'resultmsg', '加载失败'),
-									type : 'danger'
-								});
-							}
-						});
-					});
+					// self.model.load(function (res) {
+					// 	self.view.emit('render');
+					// 	self.emit('toggleMask', {
+					// 		act : 'hide',
+					// 		cbFn : function () {
+					// 			Hualala.UI.TopTip({
+					// 				msg : '加载成功',
+					// 				type : 'success'
+					// 			});
+					// 		}
+					// 	});
+					// }, function (res) {
+					// 	self.emit('toggleMask', {
+					// 		act : 'hide',
+					// 		cbFn : function () {
+					// 			Hualala.UI.TopTip({
+					// 				msg : $XP(res, 'resultmsg', '加载失败'),
+					// 				type : 'danger'
+					// 			});
+					// 		}
+					// 	});
+					// });
+					
+					self.emit('loadData');
 
 				},
 				resetShopFilter : function () {
@@ -215,6 +273,9 @@
 		},
 		bindModelEvent : function () {
 
+		},
+		clearRefreshTimer : function () {
+			this.refreshTimer && clearInterval(this.refreshTimer);
 		}
 	});
 	

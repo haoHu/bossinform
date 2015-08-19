@@ -472,6 +472,8 @@
 		{label : "收款构成", type : "list", keys : "groupID,paidAmountPayLst,cashUnit", chartType : "paidAmountPayLst"}
 	];
 
+	Hualala.TypeDef.AutoRefreshDataSeconds = 300;
+
 	
 
 
